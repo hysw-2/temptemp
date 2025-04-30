@@ -24,3 +24,5 @@ yarn-error.log*
 
 #Environment Variable
 .env
+
+#temp
