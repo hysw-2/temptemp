@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, message, Card } from 'antd';
-import registerAPI from '../api/registerAPI';
+import registerAPI from '../api/integrated/registerAPI';
 
 const SignupPage = () => {
     const onFinish = async (values) => {

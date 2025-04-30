@@ -1,4 +1,4 @@
-import apiClient from "../../src/api/apiClient";
+import apiClient from "../apiClient";
 
 const registerAPI = async (userData) => {
     try {
