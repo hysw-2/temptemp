@@ -1,6 +1,7 @@
 {
   "name": "web2025",
   "version": "0.1.0",
+  "proxy": "http://43.201.77.225:8080",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^6.0.0",

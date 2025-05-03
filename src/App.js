@@ -6,6 +6,8 @@ import AdminLogin from "./pages/AdminLogin";
 import MainSearch from "./pages/MainSearch";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
+import KakaoLogin from "./pages/KakaoLogin";
+import Discussion from "./pages/Discussion";
 import PrivateRoute from "./routes/PrivateRoute";
 
 const App = () => {
@@ -16,12 +18,14 @@ const App = () => {
             <Route path="/" element={<UserLogin />} />
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/search" element={<MainSearch />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/mypage" element={
-                <PrivateRoute>
-                    <MyPage />
-                </PrivateRoute>}
-            />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/mypage" element={
+                  <PrivateRoute>
+                      <MyPage />
+                  </PrivateRoute>}
+              />
+            <Route path="/kakao" element={<KakaoLogin />} />
+            <Route path="/discussion" element={<Discussion />}/>
           </Routes>
         </Router>
       </>
