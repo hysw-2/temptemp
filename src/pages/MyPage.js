@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
-import { Card, Typography, Form, Input, Avatar,Button, message, Divider } from "antd";
+import React, { useEffect, useState } from "react";
+import {Card, Typography, Form, Input, Avatar, Button, message, Divider, Popconfirm, Modal} from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import updateProfileAPI from "../api/mypage/updateProfileAPI";
+import deleteUserAPI from "../api/integrated/deleteUserAPI";
 
 const { Title, Text } = Typography;
 
@@ -10,6 +11,10 @@ const MyPage = () => {
     const nickName = localStorage.getItem("nickName");
     const name = localStorage.getItem("username");
     const email = localStorage.getItem("email");
+    const userId = localStorage.getItem("userId");
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [confirmName, setConfirmName] = useState("");
 
     useEffect(() => {
         form.setFieldsValue({ newNickName: nickName });
@@ -37,6 +42,26 @@ const MyPage = () => {
             }
         } catch (err) {
             console.error("폼 유효성 오류:", err);
+        }
+    };
+
+    const showDeleteConfirm = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (confirmName !== name) {
+            message.error("이름이 일치하지 않습니다.");
+            return;
+        }
+
+        const res = await deleteUserAPI(userId);
+        if (res.status === 200) {
+            message.success("회원탈퇴가 완료되었습니다.");
+            localStorage.clear();
+            window.location.href = "/";
+        } else {
+            message.error(res.message || "회원탈퇴 실패");
         }
     };
 
@@ -88,6 +113,30 @@ const MyPage = () => {
                     </Button>
                 </Form.Item>
             </Form>
+
+            <Divider />
+            <Button danger block onClick={showDeleteConfirm}>
+                회원탈퇴
+            </Button>
+            <Modal
+                title="회원탈퇴 확인"
+                open={isModalOpen}
+                onCancel={() => {
+                    setIsModalOpen(false);
+                    setConfirmName("");
+                }}
+                onOk={handleDelete}
+                okText="탈퇴"
+                cancelText="취소"
+            >
+                <p>회원탈퇴를 하시려면 이름(<strong>{name}</strong>)을 정확히 입력해주세요.</p>
+                <Input
+                    placeholder="이름 입력"
+                    value={confirmName}
+                    onChange={(e) => setConfirmName(e.target.value)}
+                />
+            </Modal>
+
         </Card>
     );
 };

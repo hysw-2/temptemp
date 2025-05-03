@@ -3,6 +3,7 @@ import { Layout, Typography, Avatar, Button, Popover, Form, Input, message } fro
 import { UserOutlined } from "@ant-design/icons";
 import loginAPI from "../api/integrated/loginAPI";
 import logoutAPI from "../api/integrated/logoutAPI";
+import deleteUserAPI from "../api/integrated/deleteUserAPI";
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -31,7 +32,7 @@ const UserHeader = () => {
             localStorage.setItem("email", res.body.email);
             localStorage.setItem("name", res.body.name);
             localStorage.setItem("nickName", res.body?.nickName);
-            localStorage.setItem("userId", res.body.uid);
+            localStorage.setItem("userId", res.body?.userId);
             localStorage.setItem("role", res.body.role);
             setPopoverVisible(false);
         } else if (res.code === "AE2") {
