@@ -1,13 +1,19 @@
 import React from 'react';
-import { Form, Input, Button, message, Card } from 'antd';
+import {Form, Input, Button, message, Card, Modal} from 'antd';
 import registerAPI from '../api/integrated/registerAPI';
+import { useNavigate } from 'react-router-dom';
 
 const SignupPage = () => {
+    const navigate = useNavigate();
     const onFinish = async (values) => {
         const res = await registerAPI(values);
-
-        if (res.status === 201 || res.status === 200) {
-            message.success('회원가입 성공!');
+        console.log("DEBUG res:", res);
+        if (res?.status === 201 || res?.status === 200) {
+            Modal.success({
+                title: "회원가입 완료",
+                content: "회원가입이 성공적으로 완료되었습니다.",
+                onOk: () => navigate("/search"),
+            });
         } else {
             switch (res.body?.code) {
                 case 'UE1':

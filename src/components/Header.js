@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Layout, Typography, Avatar, Button, Popover, Form, Input, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import loginAPI from "../api/integrated/loginAPI";
 import logoutAPI from "../api/integrated/logoutAPI";
-import deleteUserAPI from "../api/integrated/deleteUserAPI";
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -11,14 +11,18 @@ const { Title } = Typography;
 const UserHeader = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState("");
+    const [role, setRole] = useState(null);
     const [popoverVisible, setPopoverVisible] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
         const name = localStorage.getItem("username");
+        const storedRole = localStorage.getItem("role");
         if (token && name) {
             setIsLoggedIn(true);
             setUsername(name);
+            setRole(storedRole);
         }
     }, []);
 
@@ -76,18 +80,36 @@ const UserHeader = () => {
 
     return (
         <Header style={styles.header}>
-            <div style={styles.logoSection}>
-                <div style={styles.logoBox} />
-                <Title level={4} style={{ margin: 0 }}>midas</Title>
+            <div style={styles.logoSection} onClick={() => navigate("/search")}>
+                <div style={styles.logoBox}/>
+                <Title level={4} style={{margin: 0}}>midas</Title>
             </div>
+
 
             <div style={styles.userSection}>
                 {isLoggedIn ? (
                     <>
-                        <Avatar icon={<UserOutlined />} />
+                        <Avatar icon={<UserOutlined/>}/>
                         <span style={styles.username}>{username}</span>
-                        <span style={styles.mypage} onClick={() => window.location.href = "/mypage"}>마이페이지</span>
-                        <Button type="link" onClick={handleLogout}>로그아웃</Button>
+                        <span
+                            style={styles.mypage}
+                            onClick={() => navigate("/mypage")}
+                        >
+                            마이페이지
+                        </span>
+
+                        {(role === "ADMIN") && (
+                            <Button
+                                type="link"
+                                onClick={() => navigate("/admin")}
+                            >
+                                관리자페이지
+                            </Button>
+                        )}
+
+                        <Button type="link" onClick={handleLogout}>
+                            로그아웃
+                        </Button>
                     </>
                 ) : (
                     <Popover
@@ -119,6 +141,7 @@ const styles = {
         display: "flex",
         alignItems: "center",
         gap: 10,
+        cursor: "pointer",
     },
     logoBox: {
         width: 40,

@@ -5,71 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac850be8-573b-4e7b-8980-9ce3862f3b20" name="변경" comment="feat: 탈퇴 기능 추가">
-      <change afterPath="$PROJECT_DIR$/Api-dev/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/settings.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/AgendaInformationServicesApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/CustomUserDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/JwtAccessDeniedHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/JwtAuthenticationEntryPoint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/TokenAuthenticationFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/TokenExceptionFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/TokenProvider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/TokenValue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/config/TypeConverter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/controller/BillController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/controller/BillLinkController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/controller/BillProposerController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/controller/BillStatusController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/controller/UserController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/BillDetailDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/BillDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/BillProposerDetailDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/BillProposerDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/BillRankingDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/LoginRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/LoginResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/UserProfileUpdateDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/UserRegisterDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/dto/UserResponseDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/entity/Bill.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/entity/BillProposer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/entity/BillStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/entity/BlackList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/entity/Bookmark.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/entity/Role.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/exception/CustomErrorResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/exception/CustomException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/exception/ErrorCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/redis/RedisConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/repository/BillProposerRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/repository/BillRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/repository/BillStatusRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/repository/BlackListRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/repository/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/service/BillLinkService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/service/BillProposerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/service/BillService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/service/BillStatusService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/main/java/AS_API/service/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Api-dev/src/test/java/AS_API/AgendaInformationServicesApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Comment.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/Discussion.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/KakaoLogin.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/AdminDashboard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/AdminLogin.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Discussion.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Discussion.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Signup.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Signup.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +61,7 @@
   &quot;keyToString&quot;: {
     &quot;Node.js.Header.js.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;develop 병합 중&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;E:/sos-web2&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
@@ -184,6 +129,8 @@
       <workItem from="1746103076360" duration="1237000" />
       <workItem from="1746171320171" duration="316000" />
       <workItem from="1746253360729" duration="2924000" />
+      <workItem from="1746512358279" duration="5134000" />
+      <workItem from="1746787007909" duration="1644000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 초기 레이아웃 구성">
       <option name="closed" value="true" />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {  Layout,  Table,  Tag,  Modal,  Typography,  Button,  Select,  message} from "antd";
+import { Layout, Table, Modal, Typography, Button, Select, message} from "antd";
 import axios from "axios";
 import UserHeader from "../components/Header";
 import Comment from "../components/Comment";
