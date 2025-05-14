@@ -51,10 +51,10 @@ const UserHeader = () => {
         if (res.status === 200) {
             message.success("로그아웃 되었습니다.");
         }
-
         localStorage.clear();
         setIsLoggedIn(false);
         setUsername("");
+        navigate("/");
     };
 
     const loginContent = (
@@ -71,7 +71,7 @@ const UserHeader = () => {
                 </Button>
             </Form.Item>
             <Form.Item>
-                <Button type="link" size="small" block onClick={() => window.location.href = "/signup"}>
+                <Button type="link" size="small" block onClick={() => navigate("/signup")}>
                     회원가입
                 </Button>
             </Form.Item>
@@ -80,7 +80,7 @@ const UserHeader = () => {
 
     return (
         <Header style={styles.header}>
-            <div style={styles.logoSection} onClick={() => navigate("/search")}>
+            <div style={styles.logoSection} onClick={() => navigate("/")}>
                 <div style={styles.logoBox}/>
                 <Title level={4} style={{margin: 0}}>midas</Title>
             </div>

@@ -4,17 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac850be8-573b-4e7b-8980-9ce3862f3b20" name="변경" comment="feat: 탈퇴 기능 추가">
-      <change afterPath="$PROJECT_DIR$/src/pages/AdminDashboard.js" afterDir="false" />
+    <list default="true" id="ac850be8-573b-4e7b-8980-9ce3862f3b20" name="변경" comment="feat: 관리자 페이지 추가">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/admin/fetchAdminUserDetailAPI.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/admin/fetchAdminUserDetailAPI.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/AdminLogin.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Discussion.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Discussion.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Signup.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Signup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/AdminDashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/AdminDashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/KakaoLogin.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/UserLogin.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/admin/UserDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/admin/UserDetail.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/admin/UserList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/admin/UserList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/PrivateRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/PrivateRoute.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +130,10 @@
       <workItem from="1746171320171" duration="316000" />
       <workItem from="1746253360729" duration="2924000" />
       <workItem from="1746512358279" duration="5134000" />
-      <workItem from="1746787007909" duration="1644000" />
+      <workItem from="1746787007909" duration="2066000" />
+      <workItem from="1747134216251" duration="3211000" />
+      <workItem from="1747137814950" duration="3990000" />
+      <workItem from="1747221027107" duration="1703000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 초기 레이아웃 구성">
       <option name="closed" value="true" />
@@ -180,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746255843996</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="feat: 관리자 페이지 추가">
+      <option name="closed" value="true" />
+      <created>1746789750201</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1746789750201</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -192,6 +203,7 @@
     <MESSAGE value="feat: api 구현" />
     <MESSAGE value="chore: gitignore 수정" />
     <MESSAGE value="feat: 탈퇴 기능 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 탈퇴 기능 추가" />
+    <MESSAGE value="feat: 관리자 페이지 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 관리자 페이지 추가" />
   </component>
 </project>

@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { Layout, Menu, Typography, Divider, Button } from "antd";
-import {
-    UserOutlined,
-    ExclamationCircleOutlined,
-    ReloadOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, ExclamationCircleOutlined, ReloadOutlined } from "@ant-design/icons";
 import UserList from "./admin/UserList";
 import UserDetail from "./admin/UserDetail";
-// import ReportList from "./admin/ReportList";
+import UserHeader from "../components/Header";
 
 const { Sider, Content } = Layout;
 const { Title } = Typography;
@@ -15,14 +11,14 @@ const { Title } = Typography;
 const AdminDashboard = () => {
     const [selectedMenu, setSelectedMenu] = useState("users");
     const [selectedUserId, setSelectedUserId] = useState(null);
-    const [userListKey, setUserListKey] = useState(0); // 강제 리렌더링용
+    const [userListKey, setUserListKey] = useState(0);
 
-    const handleUserSelect = (user) => {
-        if (user?.userId !== null && user?.userId !== undefined) {
-            setSelectedUserId(user.userId);
-            console.log("선택된 userId:", user.userId);
+    const handleUserSelect = (userId) => {
+        if (userId != null) {
+            setSelectedUserId(userId);
+            console.log("선택된 user:", userId);
         } else {
-            console.warn("선택한 유저에 userId가 없음:", user);
+            console.warn("userId가 null입니다:", userId);
         }
     };
 
@@ -36,15 +32,15 @@ const AdminDashboard = () => {
             case "users":
                 return (
                     <>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <Title level={4}>전체 사용자 목록</Title>
+                        <div style={styles.contentHeader}>
+                            <Title level={4} style={{ margin: 0 }}>전체 사용자 목록</Title>
                             <Button icon={<ReloadOutlined />} onClick={refreshUserList}>
                                 새로고침
                             </Button>
                         </div>
                         <UserList key={userListKey} onSelectUser={handleUserSelect} />
                         <Divider />
-                        {selectedUserId && (
+                        {selectedUserId != null && (
                             <>
                                 <Title level={5}>선택된 사용자 상세</Title>
                                 <UserDetail userId={selectedUserId} />
@@ -52,13 +48,6 @@ const AdminDashboard = () => {
                         )}
                     </>
                 );
-            /* case "reports":
-                return (
-                    <>
-                        <Title level={4}>신고 내역 관리</Title>
-                        <ReportList />
-                    </>
-                ); */
             default:
                 return null;
         }
@@ -66,30 +55,39 @@ const AdminDashboard = () => {
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
-            <Sider theme="light">
-                <Menu
-                    mode="inline"
-                    selectedKeys={[selectedMenu]}
-                    onClick={({ key }) => setSelectedMenu(key)}
-                    items={[
-                        {
-                            key: "users",
-                            icon: <UserOutlined />,
-                            label: "사용자 관리",
-                        },
-                        {
-                            key: "reports",
-                            icon: <ExclamationCircleOutlined />,
-                            label: "신고 관리",
-                        },
-                    ]}
-                />
-            </Sider>
-            <Layout style={{ padding: "24px" }}>
-                <Content>{renderContent()}</Content>
+            <UserHeader />
+
+            <Layout>
+                <Sider theme="light" width={200}>
+                    <Menu
+                        mode="inline"
+                        selectedKeys={[selectedMenu]}
+                        onClick={({ key }) => setSelectedMenu(key)}
+                        items={[
+                            { key: "users", icon: <UserOutlined />, label: "사용자 관리" },
+                            { key: "reports", icon: <ExclamationCircleOutlined />, label: "신고 관리" },
+                        ]}
+                        style={{ height: "100%", borderRight: 0 }}
+                    />
+                </Sider>
+
+                <Layout style={{ padding: "24px" }}>
+                    <Content style={{ background: "#fff", padding: 24 }}>
+                        {renderContent()}
+                    </Content>
+                </Layout>
             </Layout>
         </Layout>
     );
+};
+
+const styles = {
+    contentHeader: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 16,
+    },
 };
 
 export default AdminDashboard;

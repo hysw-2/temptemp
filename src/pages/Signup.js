@@ -12,7 +12,7 @@ const SignupPage = () => {
             Modal.success({
                 title: "회원가입 완료",
                 content: "회원가입이 성공적으로 완료되었습니다.",
-                onOk: () => navigate("/search"),
+                onOk: () => navigate("/"),
             });
         } else {
             switch (res.body?.code) {

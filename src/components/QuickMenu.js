@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const menuItems = [
-    { label: "법안 검색", path: "/search", icon: "/icons/search.png" },
+    { label: "법안 검색", path: "/", icon: "/icons/search.png" },
     { label: "추천 법안", path: "/recommend", icon: "/icons/recommend.png" },
     { label: "법안 랭킹", path: "/ranking", icon: "/icons/rank.png" },
     { label: "법안 토의", path: "/discussion", icon: "/icons/discuss.png" },
