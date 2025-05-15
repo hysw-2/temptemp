@@ -3,6 +3,7 @@ import { Layout, Table, Modal, Typography, Button, Select, message} from "antd";
 import axios from "axios";
 import UserHeader from "../components/Header";
 import Comment from "../components/Comment";
+import QuickMenu from "../components/QuickMenu";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -218,6 +219,9 @@ const Discussion = () => {
           </div>
         )}
       </Modal>
+      <div>
+        <QuickMenu />
+      </div>
     </Layout>
   );
 };

@@ -9,6 +9,10 @@ import MyPage from "./pages/MyPage";
 import Discussion from "./pages/Discussion";
 import PrivateRoute from "./routes/PrivateRoute";
 import AdminRoute from "./routes/AdminRoute";
+import Ranking from "./pages/Ranking";
+import SearchResult from './pages/SearchResult';
+import BillDetail from './pages/BillDetail';
+import ProposerDetail from './pages/ProposerDetail';
 
 const App = () => {
   return (
@@ -18,6 +22,11 @@ const App = () => {
             <Route path="/" element={<MainSearch />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/discussion" element={<Discussion />}/>
+              <Route path="/ranking" element={<Ranking  />}/>
+              <Route path="/searchresult" element={<SearchResult />}/>
+              <Route path="/bills/:billId" element={<BillDetail />}/>
+              <Route path="/proposers/:proposerId" element={<ProposerDetail />} />
+
               <Route path="/mypage" element={
                   <PrivateRoute>
                       <MyPage />
