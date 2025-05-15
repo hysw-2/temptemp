@@ -1,9 +1,25 @@
 import React from "react";
 import { Card, Input, Button, Typography } from "antd";
-
+import AdminLogin from './AdminLogin';
+import SignUp from "./Signup";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 const { Title } = Typography;
 
+
+
+
+
 const KakaoLogin = () => {
+    const navigate = useNavigate();
+
+    const handleSignup = () => {
+        navigate("/signup");
+    };
+    const handleAdminLogin = () =>{
+        navigate('/admin');
+    };
+
     return (
         <div style={styles.container}>
             <Card style={styles.card}>
@@ -18,7 +34,13 @@ const KakaoLogin = () => {
                 <Button type="default" style={styles.loginButton}>
                     카카오 로그인
                 </Button>
-                <label>Sign up</label>
+                <Button type="default" style={styles.loginButton} onClick={handleSignup}>
+                    Sign Up
+                </Button>
+                
+                <Button type="default" style={styles.loginButton} onClick={handleAdminLogin}>
+                    관리자 로그인
+                </Button>
             </Card>
         </div>
     );

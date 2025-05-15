@@ -1,22 +1,47 @@
-import React from "react";
-import { Layout, Input } from "antd";
+import React, { useState } from "react";
+import { Layout, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
+const { Option } = Select;
 
 const MainPage = () => {
+    /* 검색Input 입력시 이동시킴킴 */
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchType, setSearchType] = useState("billTitle");
+    const navigate = useNavigate();
+
+    const handleSearch = (e) => {
+        if (e.key === "Enter" && searchQuery.trim()) {
+            navigate(`/searchresult?type=${searchType}&query=${encodeURIComponent(searchQuery)}`);
+        }
+    };
+
     return (
         <Layout style={styles.layout}>
             <UserHeader />
             <Content style={styles.content}>
                 <div style={styles.searchWrapper}>
+                    <Select
+                        defaultValue="billTitle"
+                        style={styles.searchSelect}
+                        onChange={setSearchType}
+                    >
+                        <Option value="billTitle">법안명</Option>
+                        <Option value="proposers">발의자</Option>
+                    </Select>
                     <Input
                         placeholder="궁금한 발의안을 검색해보세요!"
                         size="large"
                         suffix={<SearchOutlined style={{ color: "#c59fff", fontSize: "1.6vw" }} />}
                         style={styles.searchInput}
+                        /* 검색 기능 관련 요소 */
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyPress={handleSearch}
                     />
                 </div>
             </Content>
@@ -43,9 +68,15 @@ const styles = {
         width: "100%",
         display: "flex",
         justifyContent: "center",
+        gap: "10px",
+    },
+    searchSelect: {
+        width: "120px",
+        height: "8.3vh",
+        fontSize: "1.2vw",
     },
     searchInput: {
-        width: "60vw",
+        width: "50vw",
         height: "8.3vh",
         fontSize: "1.4vw",
         borderRadius: "50px",
