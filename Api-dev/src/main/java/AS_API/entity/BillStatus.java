@@ -35,4 +35,12 @@ public class BillStatus {
 
     @Column(nullable = false)
     private int bookmarkCount;
+
+    public void update(int yes, int no) {
+        this.yes = yes;
+        this.no = no;
+    }
+
 }
+
+

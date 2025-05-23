@@ -1,39 +1,25 @@
 import apiClient from "../apiClient";
 
-// 검색 API 관련 함수들
-export const searchBills = async (searchType, query) => {
-    try {
-        let endpoint = '';
-        
-        switch (searchType) {
-            case 'billTitle':
-                endpoint = `/api/bills/search?title=${encodeURIComponent(query)}`;
-                break;
-            case 'proposers':
-                endpoint = `/api/proposers/search?keyword=${encodeURIComponent(query)}`;
-                break;
-            default:
-                throw new Error('지원하지 않는 검색 타입입니다.');
-        }
+// 검색 조건에 따라 API endpoint URL을 구성
+export const searchBills = async (type, query, page = 0, size = 10) => {
+    const encodedQuery = encodeURIComponent(query);
+    let url = "";
 
-        const response = await apiClient.get(endpoint);
-
-        // 응답에서 content만 추출하여 반환
-        return response.data?.content ?? [];
-    } catch (error) {
-        console.error('검색 API 호출 중 오류 발생:', error);
-        throw error;
+    if (type === "billTitle") {
+        url = `/api/bills/search?title=${encodedQuery}&page=${page}&size=${size}`;
+    } else if (type === "proposers") {
+        url = `/api/proposers/search?name=${encodedQuery}&page=${page}&size=${size}`;
+    } else {
+        throw new Error("지원하지 않는 검색 타입입니다.");
     }
+
+    const response = await apiClient.get(url);
+    return response.data;
 };
 
-// 검색 타입에 따른 검색어 포맷팅 함수
-export const formatSearchQuery = (searchType, query) => {
-    switch (searchType) {
-        case 'billTitle':
-            return `법안명: ${query}`;
-        case 'proposers':
-            return `발의자: ${query}`;
-        default:
-            return query;
-    }
+// 사용자 친화적인 검색 설명 포맷
+export const formatSearchQuery = (type, query) => {
+    if (type === "billTitle") return `"${query}"에 대한 법안명`;
+    if (type === "proposers") return `"${query}"에 대한 발의자`;
+    return `"${query}"에 대한 결과`;
 };

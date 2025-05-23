@@ -13,6 +13,8 @@ import Ranking from "./pages/Ranking";
 import SearchResult from './pages/SearchResult';
 import BillDetail from './pages/BillDetail';
 import ProposerDetail from './pages/ProposerDetail';
+import Bills from './pages/Bills';
+import Proposers from './pages/Proposers';
 
 const App = () => {
   return (
@@ -26,7 +28,8 @@ const App = () => {
               <Route path="/searchresult" element={<SearchResult />}/>
               <Route path="/bills/:billId" element={<BillDetail />}/>
               <Route path="/proposers/:proposerId" element={<ProposerDetail />} />
-
+              <Route path="/bills" element={<Bills />}/>
+              <Route path="/proposers" element={<Proposers />}/>
               <Route path="/mypage" element={
                   <PrivateRoute>
                       <MyPage />

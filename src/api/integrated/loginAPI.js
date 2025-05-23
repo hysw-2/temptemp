@@ -8,13 +8,18 @@ const loginUser = async (loginData) => {
             }
         });
 
-        const { accessToken, name, uid, role } = response.data;
+        const { accessToken, name, uid, role, userId, email, phoneNumber, nickName } = response.data;
 
         if (accessToken) {
             localStorage.setItem("accessToken", accessToken);
             localStorage.setItem("username", name);
             localStorage.setItem("uid", uid);
             localStorage.setItem("role", role);
+            localStorage.setItem("userId", userId);
+            localStorage.setItem("email", email);
+            localStorage.setItem("phoneNumber", phoneNumber);
+            localStorage.setItem("nickName", nickName);
+            console.log('localStorage 저장 완료');
         }
 
         return {

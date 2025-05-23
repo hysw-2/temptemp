@@ -19,4 +19,5 @@ public class BillDetailDto {
     private String detail;
     private String summary;
     private String prediction;
+    private String term;
 }

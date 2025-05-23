@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Layout, Spin, message } from "antd";
+import { Layout, Spin, message, Card } from "antd";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
+import DownloadPdf from "../components/DownloadPdf";
 import apiClient from "../api/apiClient";
+
 const { Content } = Layout;
 
 const BillDetail = () => {
@@ -51,25 +53,47 @@ const BillDetail = () => {
             <UserHeader />
             <Content style={styles.content}>
                 <h3 level={2}>{bill.billh3}</h3>
-                <h1><strong></strong> {bill.billTitle}</h1>
+                <div style={styles.titleContainer}>
+                    <h1><strong></strong> {bill.billTitle}
+                    <DownloadPdf billId={billId} /></h1>
+                </div>
+
+                <div style={{padding:"12px 0px"}}>
                 <p><strong>안건번호:</strong> {bill.billNumber}</p>
                 <p><strong>발의일:</strong> {new Date(bill.billDate).toLocaleDateString()}</p>
                 <p><strong>발의자:</strong> {bill.billProposer}</p>
                 <p><strong>소관 위원회:</strong> {bill.committee}</p>
                 <p><strong>진행 상태:</strong> {bill.billStatus}</p>
+                </div>
 
-                
+
+                <div style={{padding:"12px 0px"}}>
                 <h3 level={4}>세부 내용</h3>
+                <Card>
                 <p style={styles.preserveLineBreak}>{bill.detail}</p>
-                
+                </Card>
+                </div>
 
+                <div style={{padding:"12px 0px"}}>
                 <h3 level={4}>요약</h3>
-                <p style={styles.aiBox}>{bill.summary}</p>
-
+                <Card>
+                <p>{bill.summary}</p>
+                </Card>
+                </div>
                 
-
+                <div style={{padding:"12px 0px"}}>
                 <h3 level={4}>영향 예측</h3>
-                <p style={styles.aiBox}>{bill.prediction}</p>
+                <Card>
+                <p>{bill.prediction}</p>
+                </Card>
+                </div>
+
+                <div style={{padding:"12px 0px"}}>
+                <h3 level={4}>용어 설명</h3>
+                <Card>
+                <p>{bill.term}</p>
+                </Card>
+                </div>
             </Content>
             <QuickMenu />
         </Layout>
@@ -83,7 +107,7 @@ const styles = {
         overflow: "hidden",
     },
     content: {
-        padding: "24px 10%",
+        padding: "24px 20%",
         height: "calc(100vh - 180px)",
         overflowY: "auto",
     },
@@ -105,6 +129,11 @@ const styles = {
         borderRadius:'10px',
         border:'2px,solid,rgba(54, 54, 54, 0.23)',
 
+    },
+    titleContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px'
     },
 };
 

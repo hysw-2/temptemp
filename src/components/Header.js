@@ -38,6 +38,7 @@ const UserHeader = () => {
             localStorage.setItem("nickName", res.body?.nickName);
             localStorage.setItem("userId", res.body?.userId);
             localStorage.setItem("role", res.body.role);
+            setRole(res.body.role);
             setPopoverVisible(false);
         } else if (res.code === "AE2") {
             message.error("아이디 혹은 비밀번호가 올바르지 않습니다.");

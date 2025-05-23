@@ -50,6 +50,9 @@ public class Bill {
     @Column(nullable = true, columnDefinition = "TEXT")
     private String prediction;
 
+    @Column(nullable = true, columnDefinition = "TEXT")
+    private String term;
+
     @OneToOne(mappedBy = "bill", cascade = CascadeType.ALL)
     private BillStatus billStatusDetail;
 }

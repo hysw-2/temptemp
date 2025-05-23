@@ -25,7 +25,7 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
                               Pageable pageable);
 
     @Query("SELECT new AS_API.dto.BillDetailDto(b.billId, b.apiId, b.billNumber, b.billTitle, " +
-            "b.billProposer, b.committee, b.billStatus, b.billDate, b.detail, b.summary, b.prediction) " +
+            "b.billProposer, b.committee, b.billStatus, b.billDate, b.detail, b.summary, b.prediction, b.term) " +
             "FROM Bill b WHERE b.billId = :billId")
     Optional<BillDetailDto> findBillDetailById(@Param("billId") Long billId);
 }

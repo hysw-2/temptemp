@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Input, Select, List, Card, Spin, message } from "antd";
+import { Layout, Input, Select, List, Spin, Pagination, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
@@ -20,61 +20,72 @@ const SearchResult = () => {
     const [searchType, setSearchType] = useState(initialType);
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [totalElements, setTotalElements] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 10;
+
+    const fetchData = async (page = 1) => {
+        try {
+            setLoading(true);
+            const response = await searchBills(searchType, searchQuery, page - 1, pageSize);
+            setSearchResults(response.content);
+            setTotalElements(response.totalElements);
+        } catch (error) {
+            message.error("검색 중 오류가 발생했습니다.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleSearch = async (e) => {
         if (e.key === "Enter" && searchQuery.trim()) {
-            try {
-                setLoading(true);
-                const results = await searchBills(searchType, searchQuery);
-                setSearchResults(results);
-                // URL 업데이트
-                navigate(`/searchresult?type=${searchType}&query=${encodeURIComponent(searchQuery)}`);
-            } catch (error) {
-                message.error('검색 중 오류가 발생했습니다.');
-            } finally {
-                setLoading(false);
-            }
+            setCurrentPage(1); // 검색 시 페이지 초기화
+            navigate(`/searchresult?type=${searchType}&query=${encodeURIComponent(searchQuery)}`);
+            fetchData(1);
         }
     };
 
     useEffect(() => {
         if (initialQuery) {
-            handleSearch({ key: "Enter" });
+            fetchData(currentPage);
         }
-    }, []);
+    }, [currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     const renderSearchResult = (item) => {
-    if (searchType === 'billTitle') {
-        return (
-            <div 
-                style={styles.textBlock}
-                onClick={() => navigate(`/bills/${item.billId}`)}
-            >
-                <div style={styles.resultTitle}>{item.billTitle}</div>
-                <div style={styles.resultDescription}>
-                    안건번호: {item.billNumber}<br></br>
-                    발의자: {item.billProposer}<br></br>
-                    소관위: {item.committee}<br></br>
-                    상태: {item.billStatus}
+        if (searchType === "billTitle") {
+            return (
+                <div
+                    style={styles.textBlock}
+                    onClick={() => navigate(`/bills/${item.billId}`)}
+                >
+                    <div style={styles.resultTitle}>{item.billTitle}</div>
+                    <div style={styles.resultDescription}>
+                        안건번호: {item.billNumber}<br />
+                        발의자: {item.billProposer}<br />
+                        소관위: {item.committee}<br />
+                        상태: {item.billStatus}
+                    </div>
                 </div>
-            </div>
-        );
-    } else if (searchType === 'proposers') {
-        return (
-            <div 
-                style={styles.textBlock}
-                onClick={() => navigate(`/proposers/${item.id}`)}
-            >
-                <div style={styles.resultTitle}>{item.name}</div>
-                <div style={styles.resultDescription}>
-                    소속 정당: {item.party}<br></br>
-                    직책: {item.career}
+            );
+        } else if (searchType === "proposers") {
+            return (
+                <div
+                    style={styles.textBlock}
+                    onClick={() => navigate(`/proposers/${item.id}`)}
+                >
+                    <div style={styles.resultTitle}>{item.name}</div>
+                    <div style={styles.resultDescription}>
+                        소속 정당: {item.party}<br />
+                        직책: {item.career}
+                    </div>
                 </div>
-            </div>
-        );
-    }
-};
-
+            );
+        }
+    };
 
     return (
         <Layout style={styles.layout}>
@@ -98,7 +109,7 @@ const SearchResult = () => {
                     onKeyPress={handleSearch}
                 />
             </div>
-            
+
             <div style={styles.content}>
                 {loading ? (
                     <div style={styles.loadingContainer}>
@@ -107,13 +118,23 @@ const SearchResult = () => {
                 ) : searchResults.length > 0 ? (
                     <>
                         <div style={styles.searchInfo}>
-                            {formatSearchQuery(searchType, searchQuery)} 검색 결과: {searchResults.length}건
+                            {formatSearchQuery(searchType, searchQuery)} 검색 결과: {totalElements}건
                         </div>
                         <List
                             grid={{ gutter: 16, column: 1 }}
                             dataSource={searchResults}
                             renderItem={renderSearchResult}
                         />
+                        <div style={styles.paginationWrapper}>
+                            <Pagination
+                                current={currentPage}
+                                pageSize={pageSize}
+                                total={totalElements}
+                                onChange={handlePageChange}
+                                showQuickJumper={false}
+                                showSizeChanger={false}
+                            />
+                        </div>
                     </>
                 ) : (
                     <div style={styles.noResults}>
@@ -134,7 +155,7 @@ const styles = {
         backgroundColor: "#fff",
     },
     content: {
-        padding: "20px 5%",
+        padding: "20px 20%",
         overflowY: "auto",
         height: "calc(100vh - 180px)",
     },
@@ -165,11 +186,6 @@ const styles = {
         alignItems: "center",
         height: "100%",
     },
-    card: {
-        width: "100%",
-        marginBottom: "16px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-    },
     searchInfo: {
         marginBottom: "20px",
         fontSize: "1.2em",
@@ -181,7 +197,7 @@ const styles = {
         fontSize: "1.2em",
         color: "#666",
     },
-        textBlock: {
+    textBlock: {
         padding: "16px",
         borderBottom: "1px solid #ddd",
         cursor: "pointer",
@@ -196,7 +212,11 @@ const styles = {
         fontSize: "0.95em",
         color: "#545454",
     },
-
+    paginationWrapper: {
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "24px",
+    },
 };
 
 export default SearchResult;
