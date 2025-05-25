@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { message } from 'antd';
 import apiClient from '../api/apiClient';
+import pdfIcon from '../assets/icons/pdf.png';
 
 const DownloadPdf = ({ billId }) => {
     const [loading, setLoading] = useState(false);
@@ -8,7 +9,7 @@ const DownloadPdf = ({ billId }) => {
     const handleDownload = async () => {
         try {
             setLoading(true);
-            const response = await apiClient.get(`/api/bills/${billId}/link`);
+            const response = await apiClient.get(`/bills/${billId}/link`);
             const { link } = response.data;
             
             // 새 창에서 PDF 링크 열기
@@ -23,7 +24,7 @@ const DownloadPdf = ({ billId }) => {
 
     return (
         <img
-            src="/icons/pdf.png"
+            src={pdfIcon}
             alt="PDF 다운로드"
             onClick={handleDownload}
             style={{

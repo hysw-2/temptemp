@@ -24,7 +24,7 @@ const Proposers = () => {
     const fetchProposers = async (page) => {
         try {
             setLoading(true);
-            const response = await apiClient.get(`/api/proposers/search?keyword=&page=${page - 1}&size=10`);
+            const response = await apiClient.get(`/proposers/search?keyword=&page=${page - 1}&size=10`);
             setProposers(response.data.content);
             setPagination({
                 ...pagination,

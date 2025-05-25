@@ -2,7 +2,7 @@ import './styles/fonts.css';
 import 'antd/dist/reset.css';
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import MainSearch from "./pages/MainSearch";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";

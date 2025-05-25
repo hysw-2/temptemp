@@ -16,7 +16,7 @@ const BillDetail = () => {
     useEffect(() => {
         const fetchBill = async () => {
             try {
-                const response = await apiClient.get(`/api/bills/${billId}`);
+                const response = await apiClient.get(`/bills/${billId}`);
                 setBill(response.data);
             } catch (error) {
                 message.error("법안 정보를 불러오는 데 실패했습니다.");

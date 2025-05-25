@@ -15,7 +15,7 @@ const ProposerDetail = () => {
     useEffect(() => {
         const fetchProposer = async () => {
             try {
-                const response = await apiClient.get(`/api/proposers/${proposerId}`);
+                const response = await apiClient.get(`/proposers/${proposerId}`);
                 setProposer(response.data);
             } catch (error) {
                 console.error("발의자 정보를 불러오는 중 오류 발생:", error);

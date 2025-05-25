@@ -2,7 +2,7 @@ import apiClient from "../apiClient";
 
 const logoutAPI = async () => {
     try {
-        const response = await apiClient.post('/api/logout');
+        const response = await apiClient.post('/logout');
         return {
             status: response.status,
             body: response.data,

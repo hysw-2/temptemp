@@ -2,7 +2,7 @@ import apiClient from "../apiClient";
 
 const fetchAdminUserDetailAPI = async (userId) => {
     try {
-        const response = await apiClient.get(`/api/admin/users/${userId}`);
+        const response = await apiClient.get(`/admin/users/${userId}`);
         return {
             status: response.status,
             body: response.data

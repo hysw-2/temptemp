@@ -2,7 +2,7 @@ import apiClient from "../apiClient";
 
 const loginUser = async (loginData) => {
     try {
-        const response = await apiClient.post('/api/login', loginData, {
+        const response = await apiClient.post('/login', loginData, {
             headers: {
                 'Content-Type': 'application/json'
             }

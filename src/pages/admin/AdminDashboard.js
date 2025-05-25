@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Layout, Menu, Typography, Divider, Button } from "antd";
 import { UserOutlined, ExclamationCircleOutlined, ReloadOutlined } from "@ant-design/icons";
-import UserList from "./admin/UserList";
-import UserDetail from "./admin/UserDetail";
-import UserHeader from "../components/Header";
+import UserList from "./UserList";
+import UserDetail from "./UserDetail";
+import UserHeader from "../../components/Header";
 
 const { Sider, Content } = Layout;
 const { Title } = Typography;

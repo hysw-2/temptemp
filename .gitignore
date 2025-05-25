@@ -22,8 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-#Environment Variable
-.env
-
 #temp
 .idea
+netlify.toml

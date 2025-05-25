@@ -1,7 +1,7 @@
 import apiClient from "../apiClient";
 
 export const createComment = async (postId, commentText) => {
-    const response = await apiClient.post("/api/comments", {
+    const response = await apiClient.post("/comments", {
         postId,
         commentText,
     });

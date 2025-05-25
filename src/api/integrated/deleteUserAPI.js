@@ -2,7 +2,7 @@ import apiClient from "../apiClient";
 
 const deleteUserAPI = async (uid) => {
     try {
-        const response = await apiClient.delete(`/api/users/${uid}`, {
+        const response = await apiClient.delete(`/users/${uid}`, {
             headers: {
                 'Content-Type': 'application/json'
             }

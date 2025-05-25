@@ -2,7 +2,7 @@ import apiClient from "../../src/api/apiClient";
 
 const registerAPI = async (userData) => {
     try {
-        const response = await apiClient.post('/api/register', userData);
+        const response = await apiClient.post('/register', userData);
         return {
             status: response.status,
             body: response.data

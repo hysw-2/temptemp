@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { apiServer } from '../config/api';
 
 const apiClient = axios.create({
-    baseURL: apiServer,
+    baseURL: '',
 })
 
 apiClient.interceptors.request.use(config => {

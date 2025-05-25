@@ -2,7 +2,7 @@ import apiClient from "../apiClient";
 
 const updateProfileAPI = async (updateData) => {
     try {
-        const response = await apiClient.put("/api/update/profile", updateData);
+        const response = await apiClient.put("/update/profile", updateData);
         return {
             status: response.status,
             body: response.data,

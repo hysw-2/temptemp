@@ -24,7 +24,7 @@ const Bills = () => {
     const fetchBills = async (page) => {
         try {
             setLoading(true);
-            const response = await apiClient.get(`/api/bills/search?title=&page=${page - 1}&size=10`);
+            const response = await apiClient.get(`/bills/search?title=&page=${page - 1}&size=10`);
             setBills(response.data.content);
             setPagination({
                 ...pagination,
