@@ -25,3 +25,5 @@ yarn-error.log*
 #temp
 .idea
 netlify.toml
+.env.development
+.env.production

@@ -17,7 +17,7 @@ const UserHeader = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
-        const name = localStorage.getItem("username");
+        const name = localStorage.getItem("nickName");
         const storedRole = localStorage.getItem("role");
         if (token && name) {
             setIsLoggedIn(true);
@@ -28,7 +28,6 @@ const UserHeader = () => {
 
     const handleLogin = async (values) => {
         const res = await loginAPI(values);
-
         if (res.status === 200) {
             message.success("로그인 성공!");
             setUsername(res.body.name);

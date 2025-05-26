@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Card, Typography, Form, Input, Avatar, Button, message, Divider, Popconfirm, Modal} from "antd";
+import {Card, Typography, Form, Input, Avatar, Button, message, Divider, Modal} from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import updateProfileAPI from "../api/mypage/updateProfileAPI";
 import deleteUserAPI from "../api/integrated/deleteUserAPI";
@@ -35,7 +35,7 @@ const MyPage = () => {
             if (res.status === 200) {
                 message.success("프로필이 수정되었습니다.");
                 if (payload.newNickName) {
-                    localStorage.setItem("username", payload.newNickName);
+                    localStorage.setItem("nickName", payload.newNickName);
                 }
             } else {
                 message.error(res.message || "수정 실패");
