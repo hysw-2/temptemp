@@ -102,7 +102,16 @@ const SearchResult = () => {
                 <Input
                     placeholder="궁금한 발의안을 검색해보세요!"
                     size="large"
-                    suffix={<SearchOutlined style={{ color: "#c59fff", fontSize: "1.6vw" }} />}
+                    suffix={
+                        <SearchOutlined
+                            onClick={() => {
+                                if (searchQuery.trim()) {
+                                    navigate(`/searchresult?type=${searchType}&query=${encodeURIComponent(searchQuery)}`);
+                                }
+                            }}
+                            style={{ color: "#c59fff", fontSize: "1.6vw", cursor: "pointer" }}
+                        />
+                    }
                     style={styles.searchInput}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
