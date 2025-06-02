@@ -47,14 +47,12 @@ const Proposers = () => {
         return (
             <div 
                 style={styles.textBlock}
-                onClick={() => navigate(`/proposers/${item.proposerId}`)}
+                onClick={() => navigate(`/proposers/${item.id}`)}
             >
                 <div style={styles.resultTitle}>{item.name}</div>
                 <div style={styles.resultDescription}>
-                    소속: {item.party}<br></br>
-                    선거구: {item.district}<br></br>
-                    발의 법안 수: {item.billCount}<br></br>
-                    소속위원회: {item.committee}
+                    소속 정당: {item.party}<br></br>
+                    직책: {item.career}<br></br>
                 </div>
             </div>
         );

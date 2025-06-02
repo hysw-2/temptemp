@@ -32,6 +32,12 @@ const MainPage = () => {
                     >
                         <Option value="billTitle">법안명</Option>
                         <Option value="proposers">발의자</Option>
+                        <Option value="detail">내용</Option>
+                        <Option value="titleProposer">법안명+발의자</Option>
+                        <Option value="titleProposerDetail">법안명+발의자+내용</Option>
+                        <Option value="committee">소관위</Option>
+                        <Option value="all">종합</Option>
+
                     </Select>
                     <Input
                         placeholder="궁금한 발의안을 검색해보세요!"

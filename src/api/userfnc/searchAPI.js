@@ -8,7 +8,7 @@ export const searchBills = async (type, query, page = 0, size = 10) => {
     if (type === "billTitle") {
         url = `/bills/search?title=${encodedQuery}&page=${page}&size=${size}`;
     } else if (type === "proposers") {
-        url = `/proposers/search?name=${encodedQuery}&page=${page}&size=${size}`;
+        url = `/proposers/search?keyword=${encodedQuery}&page=${page}&size=${size}`;
     } else {
         throw new Error("지원하지 않는 검색 타입입니다.");
     }

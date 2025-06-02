@@ -3,8 +3,12 @@ import Header from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
 import bookmarkRankingAPI from "../api/userfnc/bookmarkRankingAPI";
 import rankingAPI from "../api/userfnc/rankingAPI";
+import { useNavigate } from "react-router-dom";
+import { Card } from "antd";
+
 
 const Ranking = () => {
+    const navigate = useNavigate();
     const [bookmarkRanking, setBookmarkRanking] = useState([]);
     const [viewRanking, setViewRanking] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -45,17 +49,10 @@ const Ranking = () => {
                 display: 'flex', 
                 justifyContent: 'center', 
                 gap: '20px', 
-                padding: '20px',
                 marginTop: '20px'
             }}>
                 {/* 북마크 랭킹 박스 */}
-                <div style={{
-                    width: '45%',
-                    border: '2px solid rgb(208, 0, 215)',
-                    borderRadius: '8px',
-                    padding: '20px',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}>
+                <div><Card>
                     <h2 style={{ 
                         textAlign: 'center', 
                         fontsize:'16px',
@@ -65,13 +62,16 @@ const Ranking = () => {
                     <div>
                         {bookmarkRanking.length > 0 ? (
                             bookmarkRanking.map((bill, index) => (
-                                <div key={bill.billId} style={{
+                                <div key={bill.billId} 
+                                onClick={() => navigate(`/bills/${bill.billId}`)}
+                                style={{
                                     padding: '10px',
                                     borderBottom: '1px solid #eee',
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'flex-start',
-                                    gap: '10px'
+                                    gap: '10px',
+                                    cursor: 'pointer'
                                 }}>
                                     <span style={{
                                         flex: '1',
@@ -91,16 +91,11 @@ const Ranking = () => {
                             </div>
                         )}
                     </div>
+                    </Card>
                 </div>
 
                 {/* 조회수 랭킹 박스 */}
-                <div style={{
-                    width: '45%',
-                    border: '2px solid rgb(208, 0, 215)',
-                    borderRadius: '8px',
-                    padding: '20px',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}>
+                <div><Card>
                     <h2 style={{ 
                         textAlign: 'center', 
                         fontsize:'16px',
@@ -110,13 +105,16 @@ const Ranking = () => {
                     <div>
                         {viewRanking.length > 0 ? (
                             viewRanking.map((bill, index) => (
-                                <div key={bill.billId} style={{
+                                <div key={bill.billId} 
+                                onClick={() => navigate(`/bills/${bill.billId}`)}
+                                style={{
                                     padding: '10px',
                                     borderBottom: '1px solid #eee',
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'flex-start',
-                                    gap: '10px'
+                                    gap: '10px',
+                                    cursor: 'pointer'
                                 }}>
                                     <span style={{
                                         flex: '1',
@@ -136,6 +134,7 @@ const Ranking = () => {
                             </div>
                         )}
                     </div>
+                    </Card>
                 </div>
             </div>
             <QuickMenu />
