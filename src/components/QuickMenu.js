@@ -76,7 +76,7 @@ const QuickMenu = () => {
 const styles = {
     wrapper: {
         width: "50vw",
-        margin: "40px auto",
+        margin: "10px auto 20px auto",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
