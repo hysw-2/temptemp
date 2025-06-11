@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Input, Select, List, Spin, Pagination, message } from "antd";
+import { Layout, Input, Select, List, Spin, Pagination, message, Card } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
 import { useLocation, useNavigate } from "react-router-dom";
 import { searchBills, formatSearchQuery } from "../api/userfnc/searchAPI";
+import Bookmark from '../components/Bookmark';
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -56,7 +57,20 @@ const SearchResult = () => {
     };
 
     const renderSearchResult = (item) => {
-        if (searchType === "billTitle") {
+        if (searchType === "proposers") {
+            return (
+                <div
+                    style={styles.textBlock}
+                    onClick={() => navigate(`/proposers/${item.id}`)}
+                >
+                    <div style={styles.resultTitle}>{item.name}</div>
+                    <div style={styles.resultDescription}>
+                        소속 정당: {item.party}<br/>
+                        직책: {item.career}
+                    </div>
+                </div>
+            );
+        } else {
             return (
                 <div
                     style={styles.textBlock}
@@ -68,19 +82,6 @@ const SearchResult = () => {
                         발의자: {item.billProposer}<br />
                         소관위: {item.committee}<br />
                         상태: {item.billStatus}
-                    </div>
-                </div>
-            );
-        } else if (searchType === "proposers") {
-            return (
-                <div
-                    style={styles.textBlock}
-                    onClick={() => navigate(`/proposers/${item.id}`)}
-                >
-                    <div style={styles.resultTitle}>{item.name}</div>
-                    <div style={styles.resultDescription}>
-                        소속 정당: {item.party}<br />
-                        직책: {item.career}
                     </div>
                 </div>
             );
@@ -98,6 +99,11 @@ const SearchResult = () => {
                 >
                     <Option value="billTitle">법안명</Option>
                     <Option value="proposers">발의자</Option>
+                    <Option value="detail">내용</Option>
+                    <Option value="titleProposer">법안명+발의자</Option>
+                    <Option value="titleProposerDetail">법안명+발의자+내용</Option>
+                    <Option value="committee">소관위</Option>
+                    <Option value="all">종합</Option>
                 </Select>
                 <Input
                     placeholder="궁금한 발의안을 검색해보세요!"
@@ -176,9 +182,10 @@ const styles = {
         gap: "10px",
     },
     searchSelect: {
-        width: "120px",
+        width: "180px",
         height: "8.3vh",
         fontSize: "1.2vw",
+        textAling: "center"
     },
     searchInput: {
         width: "50vw",

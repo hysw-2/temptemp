@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Layout, Spin, message, Card } from "antd";
+import { Layout, Spin, message, Card, Button, Progress } from "antd";
+import { LikeOutlined, DislikeOutlined } from "@ant-design/icons";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
 import DownloadPdf from "../components/DownloadPdf";
 import apiClient from "../api/apiClient";
+import voteAPI from "../api/userfnc/voteAPI";
+import Bookmark from '../components/Bookmark';
 
 const { Content } = Layout;
 
@@ -13,6 +16,7 @@ const BillDetail = () => {
     const [bill, setBill] = useState(null);
     const [loading, setLoading] = useState(true);
     const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
+    const [userVote, setUserVote] = useState(null);
 
     useEffect(() => {
         const fetchBill = async () => {
@@ -155,6 +159,27 @@ const BillDetail = () => {
         };
     }, []);
 
+    const handleVote = async (voteType) => {
+        try {
+            if (userVote === voteType) {
+                // 투표 취소
+                await voteAPI(billId, voteType);
+                setUserVote(null);
+                message.success("투표가 취소되었습니다.");
+            } else {
+                // 새로운 투표
+                await voteAPI(billId, voteType);
+                setUserVote(voteType);
+                message.success("투표가 등록되었습니다.");
+            }
+            // 투표 후 법안 정보 새로고침
+            const response = await apiClient.get(`/bills/${billId}`);
+            setBill(response.data);
+        } catch (error) {
+            message.error("투표 처리 중 오류가 발생했습니다.");
+        }
+    };
+
     if (loading) {
         return (
             <Layout style={styles.layout}>
@@ -179,7 +204,11 @@ const BillDetail = () => {
             <UserHeader />
             <Content style={styles.content}>
                 <div style={styles.titleContainer}>
-                    <h1>{bill.billTitle} <DownloadPdf billId={billId}/></h1>
+                    <div style={styles.titleWrapper}>
+                        <Bookmark id={Number(billId)} />
+                        <h1>{bill.billTitle}</h1>
+                    </div>
+                    <DownloadPdf billId={billId} />
                 </div>
 
                 <div style={{padding: "12px 0px"}}>
@@ -211,6 +240,52 @@ const BillDetail = () => {
                     <h3>영향 예측</h3>
                     <Card>
                         {formatPrediction(bill.prediction)}
+                    </Card>
+                </div>
+
+                <div style={{padding: "12px 0px"}}>
+                    <h3>투표하기</h3>
+                    <Card>
+                        <div style={styles.voteContainer}>
+                            <Button 
+                                type={userVote === 'YES' ? 'primary' : 'default'}
+                                icon={<LikeOutlined />}
+                                onClick={() => handleVote('YES')}
+                                style={styles.voteButtonYes}
+                            />
+                            <Button 
+                                type={userVote === 'NO' ? 'primary' : 'default'}
+                                icon={<DislikeOutlined />}
+                                onClick={() => handleVote('NO')}
+                                style={styles.voteButtonNo}
+                            />
+                        </div>
+                        <div style={styles.voteStats}>
+                            <div style={styles.voteBar}>
+                                <div style={styles.voteBarContainer}>
+                                    <div 
+                                        style={{
+                                            ...styles.voteBarFill,
+                                            width: `${bill?.yes + bill?.no > 0 ? 
+                                                (bill.yes / (bill.yes + bill.no)) * 100 : 0}%`,
+                                            backgroundColor: '#1890ff'
+                                        }}
+                                    />
+                                    <div 
+                                        style={{
+                                            ...styles.voteBarFill,
+                                            width: `${bill?.yes + bill?.no > 0 ? 
+                                                (bill.no / (bill.yes + bill.no)) * 100 : 0}%`,
+                                            backgroundColor: '#ff4d4f'
+                                        }}
+                                    />
+                                </div>
+                                <div style={styles.voteCounts}>
+                                    <span style={{ color: '#1890ff' }}>찬성 {bill?.yes || 0}표</span>
+                                    <span style={{ color: '#ff4d4f' }}>반대 {bill?.no || 0}표</span>
+                                </div>
+                            </div>
+                        </div>
                     </Card>
                 </div>
 
@@ -257,9 +332,16 @@ const styles = {
         wordBreak: "keep-all",
     },
     titleContainer: {
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '20px',
+        padding: '0 20px'
+    },
+    titleWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px'
     },
     tooltip: {
         position: "absolute",
@@ -280,7 +362,56 @@ const styles = {
         borderBottom: "1px dashed #2a72de",
         cursor: "help"
     },
-
+    voteContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '20px',
+        padding: '20px 0',
+    },
+    voteButtonYes: {
+        width: '50px',
+        height: '50px',
+        fontSize: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        right:'150px'
+    },
+    voteButtonNo: {
+        width: '50px',
+        height: '50px',
+        fontSize: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        left: '150px'
+    },
+    voteStats: {
+        marginTop: '20px',
+    },
+    voteBar: {
+        maxWidth: '600px',
+        margin: '0 auto',
+    },
+    voteBarContainer: {
+        width: '100%',
+        height: '30px',
+        backgroundColor: '#f0f0f0',
+        borderRadius: '15px',
+        overflow: 'hidden',
+        display: 'flex',
+        marginBottom: '10px',
+    },
+    voteBarFill: {
+        height: '100%',
+        transition: 'width 0.3s ease-in-out',
+    },
+    voteCounts: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '0 10px',
+        fontSize: '14px',
+    },
 };
 
 export default BillDetail;

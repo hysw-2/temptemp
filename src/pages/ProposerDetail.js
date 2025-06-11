@@ -4,6 +4,7 @@ import { Layout, Spin, message, Card } from "antd";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
 import apiClient from "../api/apiClient";
+import Bookmark from '../components/Bookmark';
 
 const { Content } = Layout;
 
@@ -56,7 +57,9 @@ const ProposerDetail = () => {
         <Layout style={styles.layout}>
             <UserHeader />
             <Content style={styles.content}>
-                <h2>{proposer.name}</h2>
+                <div style={styles.titleContainer}>
+                    <h2>{proposer.name}</h2>
+                </div>
 
                 <div style={{padding:"12px 0px"}}>
                 <p><strong>정당:</strong> {proposer.party}</p>
@@ -102,6 +105,11 @@ const styles = {
         padding: "12px",
         borderRadius: "8px",
         fontFamily: "inherit",
+    },
+    titleContainer: {
+        display: "flex",
+        alignItems: "center",
+        marginBottom: "20px",
     },
 };
 

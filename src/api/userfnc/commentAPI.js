@@ -1,12 +1,13 @@
 import apiClient from "../apiClient";
 
-export const createComment = async (postId, commentContent) => {
-    const response = await apiClient.post(`/comments`, {
-        postId,
-        commentContent,
-    });
+export const createComment = async (postId, commentContent, parentCommentId = null) => {
+    const payload = parentCommentId
+      ? { postId, commentContent, parentCommentId }
+      : { postId, commentContent };
+  
+    const response = await apiClient.post(`/comments`, payload);
     return response.data;
-};
+  };
 
 export const deleteComment = async (commentId) => {
     const response = await apiClient.delete(`/comments/${commentId}`);

@@ -5,6 +5,8 @@ import Comment from "../components/Comment";
 import QuickMenu from "../components/QuickMenu";
 import { createPost, deletePost, editPost, getAllPosts, getPostById } from "../api/userfnc/postAPI";
 import { createComment, deleteComment, editComment, getCommentsByPostId } from "../api/userfnc/commentAPI";
+import { WarningOutlined } from "@ant-design/icons";
+import Report from "../components/Report";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -17,6 +19,7 @@ const Discussion = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [form] = Form.useForm();
+  const [reportTarget, setReportTarget] = useState(null);
 
   // 게시글 목록 불러오기
   useEffect(() => {
@@ -51,7 +54,7 @@ const Discussion = () => {
   // 게시글 수정
   const handleEditPost = async (values) => {
     try {
-      await editPost(selectedPost.id, values.title, values.content);
+      await editPost(selectedPost.postId, values.title, values.content);
       message.success("게시글이 수정되었습니다!");
       setIsModalOpen(false);
       setIsEditMode(false);
@@ -76,13 +79,13 @@ const Discussion = () => {
   };
 
   // 댓글 추가
-  const handleAddComment = async (postId, commentContent) => {
+  const handleAddComment = async (postId, commentContent, parentCommentId = null) => {
     if (!postId) {
       message.error("게시글 정보가 없습니다.");
       return;
     }
     try {
-      await createComment(postId, commentContent);
+      await createComment(postId, commentContent, parentCommentId);
       const updatedComments = await getCommentsByPostId(postId);
       setComments(prev => ({
         ...prev,
@@ -95,16 +98,16 @@ const Discussion = () => {
 
   // 댓글 수정
   const handleEditComment = async (commentId, commentContent) => {
-    if (!selectedPost || !selectedPost.id) {
+    if (!selectedPost) {
       message.error("게시글 정보가 없습니다.");
       return;
     }
     try {
       await editComment(commentId, commentContent);
-      const updatedComments = await getCommentsByPostId(selectedPost.id);
+      const updatedComments = await getCommentsByPostId(selectedPost.postId);
       setComments(prev => ({
         ...prev,
-        [selectedPost.id]: updatedComments
+        [selectedPost.postId]: updatedComments
       }));
     } catch (error) {
       message.error("댓글 수정에 실패했습니다.");
@@ -113,16 +116,16 @@ const Discussion = () => {
 
   // 댓글 삭제
   const handleDeleteComment = async (commentId) => {
-    if (!selectedPost || !selectedPost.id) {
+    if (!selectedPost) {
       message.error("게시글 정보가 없습니다.");
       return;
     }
     try {
       await deleteComment(commentId);
-      const updatedComments = await getCommentsByPostId(selectedPost.id);
+      const updatedComments = await getCommentsByPostId(selectedPost.postId);
       setComments(prev => ({
         ...prev,
-        [selectedPost.id]: updatedComments
+        [selectedPost.postId]: updatedComments
       }));
     } catch (error) {
       message.error("댓글 삭제에 실패했습니다.");
@@ -140,10 +143,11 @@ const Discussion = () => {
         <a
           onClick={async () => {
             try {
+              const postDetail = await getPostById(record.postId);
               await fetchComments(record.postId);
-              setSelectedPost({ ...record, id: record.postId }); // 💡 강제 id 매핑
+              setSelectedPost(postDetail);
             } catch (error) {
-              message.error("댓글을 불러오는데 실패했습니다.");
+              message.error("게시글을 불러오는데 실패했습니다.");
             }
           }}
           style={{
@@ -200,7 +204,7 @@ const Discussion = () => {
           setSelectedPost(null);
           setComments(prev => ({
             ...prev,
-            [selectedPost.id]: []
+            [selectedPost.postId]: []
           }));
         }}
         footer={[
@@ -214,8 +218,16 @@ const Discussion = () => {
           }}>
             수정
           </Button>,
-          <Button key="delete" danger onClick={() => handleDeletePost(selectedPost.id)}>
+          <Button key="delete" danger onClick={() => handleDeletePost(selectedPost.postId)}>
             삭제
+          </Button>,
+          <Button
+            key="report"
+            type="text"
+            icon={<WarningOutlined />}
+            onClick={() => setReportTarget({ id: selectedPost.postId, type: "post" })}
+          >
+            신고
           </Button>
         ]}
         width="80%"
@@ -239,10 +251,10 @@ const Discussion = () => {
           </div>
           <div style={styles.commentSection}>
             <Title level={4} style={{ marginBottom: '20px' }}>댓글</Title>
-            {selectedPost.id && (
+            {selectedPost.postId && (
               <Comment
-                comments={comments[selectedPost.id] || []}
-                onAddComment={(content) => handleAddComment(selectedPost.id, content)}
+                comments={comments[selectedPost.postId] || []}
+                onAddComment={(content) => handleAddComment(selectedPost.postId, content)}
                 onEditComment={handleEditComment}
                 onDeleteComment={handleDeleteComment}
               />
@@ -255,7 +267,8 @@ const Discussion = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <UserHeader />
+      <UserHeader /> <div/>
+
       <Content style={styles.content}>
         <div style={styles.boardContainer}>
           <div style={styles.header}>
@@ -335,6 +348,14 @@ const Discussion = () => {
 
       {/* 게시글 상세 모달 */}
       {renderPostDetailModal()}
+
+      {/* 신고 모달 */}
+      <Report
+        visible={!!reportTarget}
+        onClose={() => setReportTarget(null)}
+        targetId={reportTarget?.id}
+        type={reportTarget?.type}
+      />
       <QuickMenu />
     </div>
   );
@@ -343,11 +364,12 @@ const Discussion = () => {
 const styles = {
   layout: {
     backgroundColor: "#fff",
+    alignItems: "center"
   },
   content: {
     height: "calc(100vh - 64px)",
     textAlign: "left",
-    padding: "20px 50px",
+    padding: "20px 20%",
     backgroundColor: "#f5f5f5",
     paddingBottom: "50px",
     overflow: "auto",

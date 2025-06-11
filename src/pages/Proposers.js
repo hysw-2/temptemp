@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
 import apiClient from "../api/apiClient";
+import Bookmark from '../components/Bookmark';
 
 const { Content } = Layout;
 
@@ -49,7 +50,11 @@ const Proposers = () => {
                 style={styles.textBlock}
                 onClick={() => navigate(`/proposers/${item.id}`)}
             >
-                <div style={styles.resultTitle}>{item.name}</div>
+                <div className="proposer-header">
+                    <div style={styles.resultTitle}>
+                        {item.name}
+                    </div>
+                </div>
                 <div style={styles.resultDescription}>
                     소속 정당: {item.party}<br></br>
                     직책: {item.career}<br></br>

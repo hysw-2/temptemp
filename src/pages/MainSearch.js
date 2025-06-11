@@ -9,7 +9,7 @@ const { Content } = Layout;
 const { Option } = Select;
 
 const MainPage = () => {
-    /* 검색Input 입력시 이동시킴킴 */
+    /* 검색Input 입력시 이동시킴 */
     const [searchQuery, setSearchQuery] = useState("");
     const [searchType, setSearchType] = useState("billTitle");
     const navigate = useNavigate();
@@ -86,9 +86,10 @@ const styles = {
         gap: "10px",
     },
     searchSelect: {
-        width: "120px",
+        width: "180px",
         height: "8.3vh",
         fontSize: "1.2vw",
+        textAlign: "center"
     },
     searchInput: {
         width: "50vw",
