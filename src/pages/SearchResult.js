@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Input, Select, List, Spin, Pagination, message, Card } from "antd";
+import { Layout, Input, Select, List, Spin, Pagination, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
 import { useLocation, useNavigate } from "react-router-dom";
 import { searchBills, formatSearchQuery } from "../api/userfnc/searchAPI";
-import Bookmark from '../components/Bookmark';
+import Bookmark from "../components/Bookmark";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -40,7 +40,7 @@ const SearchResult = () => {
 
     const handleSearch = async (e) => {
         if (e.key === "Enter" && searchQuery.trim()) {
-            setCurrentPage(1); // 검색 시 페이지 초기화
+            setCurrentPage(1);
             navigate(`/searchresult?type=${searchType}&query=${encodeURIComponent(searchQuery)}`);
             fetchData(1);
         }
@@ -76,7 +76,12 @@ const SearchResult = () => {
                     style={styles.textBlock}
                     onClick={() => navigate(`/bills/${item.billId}`)}
                 >
-                    <div style={styles.resultTitle}>{item.billTitle}</div>
+                    <div style={styles.resultTitleWrapper}>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <Bookmark id={item.billId} />
+                        </div>
+                        <span style={styles.resultTitle}>{item.billTitle}</span>
+                    </div>
                     <div style={styles.resultDescription}>
                         안건번호: {item.billNumber}<br />
                         발의자: {item.billProposer}<br />
@@ -175,7 +180,7 @@ const styles = {
         height: "calc(100vh - 180px)",
     },
     searchWrapper: {
-        paddingTop: '10px',
+        paddingTop: "10px",
         width: "100%",
         display: "flex",
         justifyContent: "center",
@@ -185,7 +190,7 @@ const styles = {
         width: "180px",
         height: "8.3vh",
         fontSize: "1.2vw",
-        textAling: "center"
+        textAlign: "center",
     },
     searchInput: {
         width: "50vw",
@@ -217,6 +222,11 @@ const styles = {
         padding: "16px",
         borderBottom: "1px solid #ddd",
         cursor: "pointer",
+    },
+    resultTitleWrapper: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
     },
     resultTitle: {
         fontSize: "1.2em",
