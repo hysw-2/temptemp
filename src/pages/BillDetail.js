@@ -206,9 +206,9 @@ const BillDetail = () => {
                 <div style={styles.titleContainer}>
                     <div style={styles.titleWrapper}>
                         <Bookmark id={Number(billId)} />
-                        <h1>{bill.billTitle}</h1>
-                    </div>
+                        <h1>{bill.billTitle}</h1>                    
                     <DownloadPdf billId={billId} />
+                    </div>
                 </div>
 
                 <div style={{padding: "12px 0px"}}>

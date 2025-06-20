@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
 import apiClient from "../api/apiClient";
+import Bookmark from "../components/Bookmark";
 
 const { Content } = Layout;
 
@@ -49,14 +50,19 @@ const Bills = () => {
                 style={styles.textBlock}
                 onClick={() => navigate(`/bills/${item.billId}`)}
             >
-                <div style={styles.resultTitle}>{item.billTitle}</div>
-                <div style={styles.resultDescription}>
-                    안건번호: {item.billNumber}<br></br>
-                    발의자: {item.billProposer}<br></br>
-                    소관위: {item.committee}<br></br>
-                    상태: {item.billStatus}
+            <div style={styles.resultTitleWrapper}>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <Bookmark id={item.billId} />
+                        </div>
+                        <span style={styles.resultTitle}>{item.billTitle}</span>
+                    </div>
+                    <div style={styles.resultDescription}>
+                        안건번호: {item.billNumber}<br />
+                        발의자: {item.billProposer}<br />
+                        소관위: {item.committee}<br />
+                        상태: {item.billStatus}
+                    </div>
                 </div>
-            </div>
         );
     };
 
@@ -135,7 +141,11 @@ const styles = {
         padding: "16px",
         borderBottom: "1px solid #ddd",
         cursor: "pointer",
-        width: "100%"
+    },
+    resultTitleWrapper: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
     },
     resultTitle: {
         fontSize: "1.2em",

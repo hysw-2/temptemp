@@ -5,7 +5,7 @@ import { reportPost, reportComment } from "../api/userfnc/reportAPI";
 
 const { TextArea } = Input;
 
-const Report = ({ visible, onClose, targetId, type }) => {
+const Report = ({ visible, onClose, targetId, type, targetAuthor }) => {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +25,7 @@ const Report = ({ visible, onClose, targetId, type }) => {
       }
 
       if (typeof response === "string") {
-        message.success(response); // 서버가 문자열 응답 시
+        message.success(response);
       } else {
         message.success("신고가 접수되었습니다.");
       }
@@ -50,7 +50,7 @@ const Report = ({ visible, onClose, targetId, type }) => {
     <Modal
       title={
         <>
-          <ExclamationCircleOutlined /> 신고하기
+          <ExclamationCircleOutlined style={{ marginRight: 8 }} /> 신고하기
         </>
       }
       open={visible}
@@ -63,6 +63,11 @@ const Report = ({ visible, onClose, targetId, type }) => {
       cancelText="취소"
       confirmLoading={loading}
     >
+      {targetAuthor && (
+        <p style={{ marginBottom: 12, color: '#888' }}>
+          대상 작성자: <strong>{targetAuthor}</strong>
+        </p>
+      )}
       <TextArea
         rows={4}
         value={reason}

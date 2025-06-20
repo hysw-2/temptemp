@@ -29,8 +29,8 @@ const DownloadPdf = ({ billId }) => {
             alt="PDF 다운로드"
             onClick={handleDownload}
             style={{
-                width: '24px',
-                height: '32px',
+                width: 'auto',
+                height:'32px',
                 cursor: 'pointer',
                 marginLeft: '10px',
                 opacity: loading ? 0.5 : 1,

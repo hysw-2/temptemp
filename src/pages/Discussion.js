@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Table, Modal, Typography, Button, Input, Form, message } from "antd";
+import { Layout, Typography, Button, Input, Form, message, Card, Pagination } from "antd";
 import UserHeader from "../components/Header";
 import Comment from "../components/Comment";
 import QuickMenu from "../components/QuickMenu";
-import { createPost, deletePost, editPost, getAllPosts, getPostById } from "../api/userfnc/postAPI";
-import { createComment, deleteComment, editComment, getCommentsByPostId } from "../api/userfnc/commentAPI";
-import { WarningOutlined } from "@ant-design/icons";
-import Report from "../components/Report";
+import { createPost, getAllPosts } from "../api/userfnc/postAPI";
+import { getCommentsByPostId, createComment } from "../api/userfnc/commentAPI";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -15,13 +13,11 @@ const { TextArea } = Input;
 const Discussion = () => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState({});
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [form] = Form.useForm();
-  const [reportTarget, setReportTarget] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
-  // 게시글 목록 불러오기
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -29,390 +25,159 @@ const Discussion = () => {
   const fetchPosts = async () => {
     try {
       const response = await getAllPosts();
-      // 최신 게시글이 먼저 오도록 정렬
-      const sortedPosts = response.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
-      console.log("Fetched posts:", sortedPosts); // 디버깅용 로그
-      setPosts(sortedPosts);
-    } catch (error) {
-      message.error("게시글을 불러오는데 실패했습니다.");
+      const sorted = response.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+      setPosts(sorted);
+
+      // 댓글도 모두 미리 불러옴
+      for (const post of sorted) {
+        console.log(`게시글 ${post.postId}의 댓글 로딩 중...`);
+        const postComments = await getCommentsByPostId(post.postId);
+        console.log(`게시글 ${post.postId}의 댓글 데이터:`, postComments);
+        setComments(prev => ({ ...prev, [post.postId]: postComments }));
+      }
+    } catch (err) {
+      console.error("게시글/댓글 불러오기 오류:", err);
+      message.error("게시글 불러오기 실패");
     }
   };
 
-  // 게시글 작성
   const handleSubmitPost = async (values) => {
+    setLoading(true);
     try {
-      await createPost(values.title, values.content);
-      message.success("게시글이 등록되었습니다!");
-      setIsModalOpen(false);
+      const {title, content} = values;
+      await createPost(title, content);
+      message.success("게시글이 등록되었습니다.");
       form.resetFields();
       fetchPosts();
-    } catch (error) {
-      message.error("게시글 등록에 실패했습니다.");
+    } catch (err) {
+      message.error("게시글 등록 실패");
+      console.error("게시글 등록 오류:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // 게시글 수정
-  const handleEditPost = async (values) => {
+  const handleAddComment = async (postId, content) => {
     try {
-      await editPost(selectedPost.postId, values.title, values.content);
-      message.success("게시글이 수정되었습니다!");
-      setIsModalOpen(false);
-      setIsEditMode(false);
-      setSelectedPost(null);
-      form.resetFields();
-      fetchPosts();
-    } catch (error) {
-      message.error("게시글 수정에 실패했습니다.");
+      console.log("댓글 등록 시도:", { postId, content });
+      await createComment(postId, content);
+      
+      console.log("댓글 등록 완료, 새로운 댓글 목록 가져오는 중...");
+      const updated = await getCommentsByPostId(postId);
+      console.log("업데이트된 댓글 목록:", updated);
+      
+      setComments(prev => {
+        const newComments = { ...prev, [postId]: updated };
+        console.log("댓글 상태 업데이트:", { 이전상태: prev, 새로운상태: newComments });
+        return newComments;
+      });
+      
+      message.success("댓글이 등록되었습니다.");
+    } catch (err) {
+      console.error("댓글 등록 오류:", err);
+      message.error("댓글 등록 실패");
     }
   };
 
-  // 게시글 삭제
-  const handleDeletePost = async (postId) => {
-    try {
-      await deletePost(postId);
-      message.success("게시글이 삭제되었습니다!");
-      setSelectedPost(null);
-      fetchPosts();
-    } catch (error) {
-      message.error("게시글 삭제에 실패했습니다.");
-    }
-  };
-
-  // 댓글 추가
-  const handleAddComment = async (postId, commentContent, parentCommentId = null) => {
-    if (!postId) {
-      message.error("게시글 정보가 없습니다.");
-      return;
-    }
-    try {
-      await createComment(postId, commentContent, parentCommentId);
-      const updatedComments = await getCommentsByPostId(postId);
-      setComments(prev => ({
-        ...prev,
-        [postId]: updatedComments
-      }));
-    } catch (error) {
-      message.error("댓글 등록에 실패했습니다.");
-    }
-  };
-
-  // 댓글 수정
-  const handleEditComment = async (commentId, commentContent) => {
-    if (!selectedPost) {
-      message.error("게시글 정보가 없습니다.");
-      return;
-    }
-    try {
-      await editComment(commentId, commentContent);
-      const updatedComments = await getCommentsByPostId(selectedPost.postId);
-      setComments(prev => ({
-        ...prev,
-        [selectedPost.postId]: updatedComments
-      }));
-    } catch (error) {
-      message.error("댓글 수정에 실패했습니다.");
-    }
-  };
-
-  // 댓글 삭제
-  const handleDeleteComment = async (commentId) => {
-    if (!selectedPost) {
-      message.error("게시글 정보가 없습니다.");
-      return;
-    }
-    try {
-      await deleteComment(commentId);
-      const updatedComments = await getCommentsByPostId(selectedPost.postId);
-      setComments(prev => ({
-        ...prev,
-        [selectedPost.postId]: updatedComments
-      }));
-    } catch (error) {
-      message.error("댓글 삭제에 실패했습니다.");
-    }
-  };
-
-  // 테이블 컬럼
-  const columns = [
-    {
-      title: "제목",
-      dataIndex: "postTitle",
-      key: "postTitle",
-      width: "60%",
-      render: (text, record) => (
-        <a
-          onClick={async () => {
-            try {
-              const postDetail = await getPostById(record.postId);
-              await fetchComments(record.postId);
-              setSelectedPost(postDetail);
-            } catch (error) {
-              message.error("게시글을 불러오는데 실패했습니다.");
-            }
-          }}
-          style={{
-            fontSize: "16px",
-            color: 'black',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          {text}
-        </a>
-      ),
-    },
-    {
-      title: "작성일",
-      dataIndex: "postDate",
-      key: "postDate",
-      width: "20%",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "작성자",
-      dataIndex: "author",
-      key: "author",
-      width: "20%",
-    },
-  ];
-
-  const fetchComments = async (postId) => {
-    if (!postId) {
-      console.error("postId is undefined");
-      return;
-    }
-    try {
-      const response = await getCommentsByPostId(postId);
-      setComments(prev => ({
-        ...prev,
-        [postId]: response
-      }));
-    } catch (error) {
-      message.error("댓글을 불러오는데 실패했습니다.");
-    }
-  };
-
-  // 게시글 상세 모달
-  const renderPostDetailModal = () => {
-    if (!selectedPost) return null;
-
-    return (
-      <Modal
-        title={selectedPost.postTitle}
-        open={!!selectedPost}
-        onCancel={() => {
-          setSelectedPost(null);
-          setComments(prev => ({
-            ...prev,
-            [selectedPost.postId]: []
-          }));
-        }}
-        footer={[
-          <Button key="edit" onClick={() => {
-            setIsEditMode(true);
-            setIsModalOpen(true);
-            form.setFieldsValue({
-              title: selectedPost.postTitle,
-              content: selectedPost.content
-            });
-          }}>
-            수정
-          </Button>,
-          <Button key="delete" danger onClick={() => handleDeletePost(selectedPost.postId)}>
-            삭제
-          </Button>,
-          <Button
-            key="report"
-            type="text"
-            icon={<WarningOutlined />}
-            onClick={() => setReportTarget({ id: selectedPost.postId, type: "post" })}
-          >
-            신고
-          </Button>
-        ]}
-        width="80%"
-        style={{ top: 20 }}
-        styles={{
-          body: {
-            maxHeight: 'calc(100vh - 200px)',
-            overflow: 'auto',
-            padding: '24px'
-          }
-        }}
-      >
-        <div style={styles.modalContent}>
-          <div style={styles.postHeader}>
-            <Text type="secondary">
-              {selectedPost.author} | {new Date(selectedPost.postDate).toLocaleString()}
-            </Text>
-          </div>
-          <div style={styles.postContent}>
-            {selectedPost.content}
-          </div>
-          <div style={styles.commentSection}>
-            <Title level={4} style={{ marginBottom: '20px' }}>댓글</Title>
-            {selectedPost.postId && (
-              <Comment
-                comments={comments[selectedPost.postId] || []}
-                onAddComment={(content) => handleAddComment(selectedPost.postId, content)}
-                onEditComment={handleEditComment}
-                onDeleteComment={handleDeleteComment}
-              />
-            )}
-          </div>
-        </div>
-      </Modal>
-    );
-  };
+  const pagedPosts = posts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <UserHeader /> <div/>
-
+    <Layout style={styles.layout}>
+      <UserHeader />
       <Content style={styles.content}>
-        <div style={styles.boardContainer}>
-          <div style={styles.header}>
-            <Title level={2} style={styles.boardTitle}>
-              토론 게시판
-            </Title>
-            <Button type="primary" onClick={() => {
-              setIsModalOpen(true);
-              setIsEditMode(false);
-              form.resetFields();
-            }}>
-              새 글 작성
-            </Button>
-          </div>
-          <Table
-            columns={columns}
-            dataSource={posts}
-            rowKey="id"
-            pagination={{ pageSize: 10 }}
-            style={styles.table}
-            onRow={(record) => ({
-              onClick: () => {
-                setSelectedPost(record);
-                if (record.id) {
-                  fetchComments(record.id);
-                }
-              },
-              style: { cursor: 'pointer' }
-            })}
+        <div style={styles.container}>
+          <Title level={2}>토론 게시판</Title>
+          <Form form={form} onFinish={handleSubmitPost} layout="vertical" style={styles.form}>
+            <Form.Item name="title" rules={[{ required: true, message: "제목을 입력해주세요" }]}> 
+              <Input placeholder="제목" /> 
+            </Form.Item>
+            <Form.Item name="content" rules={[{ required: true, message: "내용을 입력해주세요" }]}> 
+              <TextArea rows={4} placeholder="내용" /> 
+            </Form.Item>
+            <Form.Item> 
+              <Button type="primary" htmlType="submit" loading={loading}>작성</Button> 
+            </Form.Item>
+          </Form>
+
+          {pagedPosts.map((post) => (
+            <Card key={post.postId} style={styles.postCard}>
+              <div style={styles.postHeader}>
+                <Text strong>{post.author}</Text>
+                <Text type="secondary" style={{ marginLeft: 8 }}>{new Date(post.postDate).toLocaleString()}</Text>
+              </div>
+              <Title level={4}>{post.postTitle}</Title>
+              <p>{post.content}</p>
+              <Comment
+                postId={post.postId}
+                comments={comments[post.postId] || []}
+                onAddComment={(content) => handleAddComment(post.postId, content)}
+                fetchComments={async () => {
+                  try {
+                    const updated = await getCommentsByPostId(post.postId);
+                    setComments(prev => ({ ...prev, [post.postId]: updated }));
+                  } catch (err) {
+                    console.error("댓글 새로고침 오류:", err);
+                    message.error("댓글을 새로고침하는 중 오류가 발생했습니다.");
+                  }
+                }}
+              />
+            </Card>
+          ))}
+
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={posts.length}
+            onChange={page => setCurrentPage(page)}
+            style={{ marginTop: 24 }}
           />
         </div>
       </Content>
-
-      {/* 게시글 작성/수정 모달 */}
-      <Modal
-        title={isEditMode ? "게시글 수정" : "새 글 작성"}
-        open={isModalOpen}
-        onCancel={() => {
-          setIsModalOpen(false);
-          setIsEditMode(false);
-          form.resetFields();
-        }}
-        footer={null}
-        width="80%"
-        style={{ top: 20 }}
-        styles={{
-          body: {
-            maxHeight: 'calc(100vh - 200px)',
-            overflow: 'auto'
-          }
-        }}
-      >
-        <Form
-          form={form}
-          onFinish={isEditMode ? handleEditPost : handleSubmitPost}
-          initialValues={selectedPost}
-        >
-          <Form.Item
-            name="title"
-            rules={[{ required: true, message: "제목을 입력해주세요" }]}
-          >
-            <Input placeholder="제목을 입력하세요" />
-          </Form.Item>
-          <Form.Item
-            name="content"
-            rules={[{ required: true, message: "내용을 입력해주세요" }]}
-          >
-            <TextArea rows={6} placeholder="내용을 입력하세요" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              {isEditMode ? "수정하기" : "등록하기"}
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* 게시글 상세 모달 */}
-      {renderPostDetailModal()}
-
-      {/* 신고 모달 */}
-      <Report
-        visible={!!reportTarget}
-        onClose={() => setReportTarget(null)}
-        targetId={reportTarget?.id}
-        type={reportTarget?.type}
-      />
-      <QuickMenu />
-    </div>
+      <div style={styles.quickMenuWrapper}><QuickMenu /></div>
+    </Layout>
   );
 };
 
 const styles = {
   layout: {
-    backgroundColor: "#fff",
-    alignItems: "center"
+    height: "100vh",
+    backgroundColor: "#f5f5f5",
+    display: "flex",
+    flexDirection: "column",
   },
   content: {
-    height: "calc(100vh - 64px)",
-    textAlign: "left",
-    padding: "20px 20%",
-    backgroundColor: "#f5f5f5",
-    paddingBottom: "50px",
-    overflow: "auto",
+    flex: 1,
+    overflowY: "auto",
+    padding: "24px 20%",
+    paddingBottom: 100,
   },
-  boardContainer: {
-    backgroundColor: "#fff",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-  },
-  header: {
+  container: {
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "20px",
+    flexDirection: "column",
+    gap: 20,
+    paddingBottom: 100,
   },
-  boardTitle: {
-    margin: 0,
-    color: "#333",
+  form: {
+    marginBottom: 32,
+    background: "#fff",
+    padding: 20,
+    borderRadius: 8,
   },
-  table: {
-    backgroundColor: "#fff",
-  },
-  modalContent: {
-    padding: "0",
+  postCard: {
+    borderRadius: 8,
+    marginBottom: 24,
   },
   postHeader: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    marginBottom: "20px",
+    marginBottom: 12,
   },
-  postContent: {
-    marginBottom: "30px",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "8px",
-    minHeight: "100px",
-  },
-  commentSection: {
-    marginTop: "30px",
-    borderTop: "1px solid #e8e8e8",
-    paddingTop: "20px",
+  quickMenuWrapper: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    backgroundColor: "#fff",
+    boxShadow: "0 -2px 8px rgba(0,0,0,0.1)",
+    zIndex: 1000,
   },
 };
 
