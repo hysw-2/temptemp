@@ -15,6 +15,9 @@ import BillDetail from './pages/BillDetail';
 import ProposerDetail from './pages/ProposerDetail';
 import Bills from './pages/Bills';
 import Proposers from './pages/Proposers';
+import AdminReportPage from "./pages/admin/AdminReportPage";
+import AdminReportDetailPage from "./pages/admin/AdminReportDetailPage";
+import Recommend from "./pages/RecommendedBills"
 
 const App = () => {
   return (
@@ -35,12 +38,26 @@ const App = () => {
                       <MyPage />
                   </PrivateRoute>}
               />
+              <Route path="/recommend" element={
+                  <PrivateRoute>
+                      <Recommend />
+                  </PrivateRoute>}
+              />
               <Route path="/admin" element={
                   <AdminRoute>
                       <AdminDashboard />
                   </AdminRoute>}
               />
-
+              <Route path="/admin/reports" element={
+                  <AdminRoute>
+                      <AdminReportPage />
+                  </AdminRoute>
+              } />
+              <Route path="/admin/report/:reportId" element={
+                  <AdminRoute>
+                      <AdminReportDetailPage />
+                  </AdminRoute>
+              } />
           </Routes>
         </Router>
       </>

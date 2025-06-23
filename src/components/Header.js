@@ -4,6 +4,7 @@ import { Layout, Typography, Avatar, Button, Popover, Form, Input, message } fro
 import { UserOutlined } from "@ant-design/icons";
 import loginAPI from "../api/integrated/loginAPI";
 import logoutAPI from "../api/integrated/logoutAPI";
+import Logo from "../assets/icons/LOGO.png"
 
 const { Header } = Layout;
 const { Title } = Typography;
@@ -81,13 +82,13 @@ const UserHeader = () => {
     return (
         <Header style={styles.header}>
             <div style={styles.logoSection} onClick={() => navigate("/")}>
-                <div style={styles.logoBox}/>
-                <Title level={4} style={{margin: 0}}>midas</Title>
+                <img src={Logo} alt="logo" style={styles.logoImage}/>
+                <Title level={4} style={{margin: 0}}>LegisLink</Title>
             </div>
 
 
             <div style={styles.userSection}>
-                {isLoggedIn ? (
+            {isLoggedIn ? (
                     <>
                         <Avatar icon={<UserOutlined/>}/>
                         <span style={styles.username}>{username}</span>
@@ -143,10 +144,10 @@ const styles = {
         gap: 10,
         cursor: "pointer",
     },
-    logoBox: {
+    logoImage: {
         width: 40,
         height: 40,
-        backgroundColor: "#d9d9d9",
+        objectFit: "contain",
     },
     userSection: {
         display: "flex",

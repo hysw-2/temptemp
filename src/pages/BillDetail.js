@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Layout, Spin, message, Card, Button, Progress } from "antd";
+import { Layout, Spin, message, Card, Button } from "antd";
 import { LikeOutlined, DislikeOutlined } from "@ant-design/icons";
 import UserHeader from "../components/Header";
 import QuickMenu from "../components/QuickMenu";
-import DownloadPdf from "../components/DownloadPdf";
+import LinkBillInfo from "../components/LinkBillInfo";
 import apiClient from "../api/apiClient";
 import voteAPI from "../api/userfnc/voteAPI";
 import Bookmark from '../components/Bookmark';
@@ -16,7 +16,7 @@ const BillDetail = () => {
     const [bill, setBill] = useState(null);
     const [loading, setLoading] = useState(true);
     const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
-    const [userVote, setUserVote] = useState(null);
+    const [userVote, setUserVote]=useState(null);
 
     useEffect(() => {
         const fetchBill = async () => {
@@ -32,24 +32,27 @@ const BillDetail = () => {
         fetchBill();
     }, [billId]);
 
-    const parsedTerms = useMemo(() => {
-        if (!bill?.term) return [];
-        const termRegex = /\d+\.\s*([^:]+):\s*([^\n]+)/g;
-        const result = [];
-        let match;
-        while ((match = termRegex.exec(bill.term)) !== null) {
-            result.push({ term: match[1].trim(), explanation: match[2].trim() });
+    const terms = useMemo(() => {
+        try {
+            const parsed = JSON.parse(bill?.term || "{}");
+            return parsed.terms || [];
+        } catch {
+            return [];
         }
-        return result;
     }, [bill]);
 
     const highlightedDetail = useMemo(() => {
         if (!bill?.detail) return bill?.detail || "";
 
-        const usedTerms = new Set();
         let content = bill.detail;
 
-        parsedTerms.forEach(({ term, explanation }) => {
+        if (content.startsWith("제안이유 및 주요내용")) {
+            content = content.slice("제안이유 및 주요내용".length).trimStart();
+        }
+
+        const usedTerms = new Set();
+
+        terms.forEach(({ term, description }) => {
             const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
             const regex = new RegExp(`(${escapedTerm})`, "g");
 
@@ -59,77 +62,69 @@ const BillDetail = () => {
                     usedTerms.add(term);
                     foundOnce = true;
                     return `<span class="highlighted-term" 
-                        style="font-weight:bold; color:#2a72de; border-bottom:1px dashed #2a72de; cursor:help"
-                        data-explanation="${explanation}">${match}</span>`;
+                    style="font-weight:bold; color:#2a72de; border-bottom:1px dashed #2a72de; cursor:help"
+                    data-explanation="${description}">${match}</span>`;
                 }
                 return match;
             });
         });
-
         return content;
-    }, [bill?.detail, parsedTerms]);
+    }, [bill?.detail, terms]);
 
-    function formatPrediction(predictionText) {
-        const sections = predictionText.split(/\[(긍정적|부정적) 영향\]/).filter(Boolean);
+    const formatPrediction = () => {
+        try {
+            const prediction = JSON.parse(bill.prediction || "{}");
 
-        return sections.map((section, idx) => {
-            const isLabel = idx % 2 === 0;
-            if (isLabel) return null;
-
-            const label = sections[idx - 1];
-            const color = label === "긍정적" ? "#0A9100" : "#E30000";
-            const title = `[${label} 영향]`;
-
-            const items = section
-                .split(/(?=\d+\.\s)/)
-                .filter(item => item.trim().length > 0)
-                .map((item, i) => {
-                    const match = item.match(/\*\*(.+?)\*\*:(.+)/);
-                    if (match) {
-                        const [_, strong, rest] = match;
-                        return (
-                            <li key={i} style={{ marginBottom: "8px", lineHeight: "1.8" }}>
-                                <strong>{strong}</strong>: {rest.trim()}
-                            </li>
-                        );
-                    }
-                    return <li key={i}>{item.trim()}</li>;
-                });
-
-            return (
-                <div key={idx} style={{ marginBottom: "20px" }}>
+            const renderEffectList = (effects, title, color) => (
+                <div style={{ marginBottom: "20px" }}>
                     <h3 style={{ color, fontWeight: "bold" }}>{title}</h3>
-                    <ul style={{ paddingLeft: "20px", marginTop: "10px" }}>{items}</ul>
+                    <ul style={{ paddingLeft: "20px", marginTop: "10px" }}>
+                        {effects.map((item, i) => (
+                            <li key={i} style={{ marginBottom: "8px", lineHeight: "1.8" }}>
+                                <strong>{item.title}</strong>: {item.description}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             );
-        });
-    }
 
-    const formatSummary = (text) => {
-        // [소제목] 본문 구조 매칭
-        const sections = text.split(/(?=\[[^\]]+\])/g);
-
-        return sections.map((section, index) => {
-            const match = section.match(/^\[([^\]]+)\](.*)/s);
-            if (match) {
-                const [, title, content] = match;
-                return (
-                    <div key={index} style={{ marginBottom: "16px" }}>
-                        <h4 style={{ fontWeight: "bold", color: "#0300b2", marginBottom: "8px" }}>
-                            {title}
-                        </h4>
-                        <p style={{ margin: 0, lineHeight: "1.8" }}>{content.trim()}</p>
-                    </div>
-                );
-            } else {
-                return (
-                    <p key={index} style={{ lineHeight: "1.8" }}>
-                        {section.trim()}
-                    </p>
-                );
-            }
-        });
+            return (
+                <>
+                    {prediction.positive_effects &&
+                        renderEffectList(prediction.positive_effects, "[긍정적 영향]", "#0A9100")}
+                    {prediction.negative_effects &&
+                        renderEffectList(prediction.negative_effects, "[부정적 영향]", "#E30000")}
+                </>
+            );
+        } catch {
+            return <p style={{ lineHeight: "1.8" }}>{bill.prediction}</p>;
+        }
     };
+
+    const formatSummary = () => {
+        try {
+            const summary = JSON.parse(bill.summary || "{}");
+            return (
+                <>
+                    {summary.summary && (
+                        <div style={{ marginBottom: "16px" }}>
+                            <h4 style={{ fontWeight: "bold", color: "#0300b2" }}>요약</h4>
+                            <p style={{ margin: 0, lineHeight: "1.8" }}>{summary.summary}</p>
+                        </div>
+                    )}
+                    {summary.purpose && (
+                        <div style={{ marginBottom: "16px" }}>
+                            <h4 style={{ fontWeight: "bold", color: "#0300b2" }}>제안 목적</h4>
+                            <p style={{ margin: 0, lineHeight: "1.8" }}>{summary.purpose}</p>
+                        </div>
+                    )}
+                </>
+            );
+        } catch {
+            return <p style={{ lineHeight: "1.8" }}>{bill.summary}</p>;
+        }
+    };
+
     useEffect(() => {
         const handleMouseOver = (e) => {
             const target = e.target;
@@ -204,17 +199,19 @@ const BillDetail = () => {
             <UserHeader />
             <Content style={styles.content}>
                 <div style={styles.titleContainer}>
-                    <div style={styles.titleWrapper}>
-                        <Bookmark id={Number(billId)} />
-                        <h1>{bill.billTitle}</h1>                    
-                    <DownloadPdf billId={billId} />
-                    </div>
+                    <h1 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <span style={{ display: "inline-block" }}>
+                            <Bookmark id={Number(billId)} />
+                        </span>
+                        {bill.billTitle}
+                        <LinkBillInfo billId={billId}/>
+                    </h1>
                 </div>
-
                 <div style={{padding: "12px 0px"}}>
                     <p><strong>안건번호:</strong> {bill.billNumber}</p>
                     <p><strong>발의일:</strong> {new Date(bill.billDate).toLocaleDateString()}</p>
                     <p><strong>발의자:</strong> {bill.billProposer}</p>
+                    <p><strong>발의자 소속:</strong> {bill.poly}</p>
                     <p><strong>소관 위원회:</strong> {bill.committee}</p>
                     <p><strong>진행 상태:</strong> {bill.billStatus}</p>
                 </div>
@@ -231,16 +228,12 @@ const BillDetail = () => {
 
                 <div style={{padding: "12px 0px"}}>
                     <h3>쉬운 설명</h3>
-                    <Card>
-                        {formatSummary(bill.summary)}
-                    </Card>
+                    <Card>{formatSummary()}</Card>
                 </div>
 
                 <div style={{padding: "12px 0px"}}>
                     <h3>영향 예측</h3>
-                    <Card>
-                        {formatPrediction(bill.prediction)}
-                    </Card>
+                    <Card>{formatPrediction()}</Card>
                 </div>
 
                 <div style={{padding: "12px 0px"}}>
@@ -332,16 +325,9 @@ const styles = {
         wordBreak: "keep-all",
     },
     titleContainer: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '20px',
-        padding: '0 20px'
-    },
-    titleWrapper: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px'
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
     },
     tooltip: {
         position: "absolute",
@@ -412,6 +398,7 @@ const styles = {
         padding: '0 10px',
         fontSize: '14px',
     },
+
 };
 
 export default BillDetail;
