@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Input, Select, List, Spin, Pagination, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import UserHeader from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
 import { useLocation, useNavigate } from "react-router-dom";
 import { searchBills, formatSearchQuery } from "../api/userfnc/searchAPI";
 
@@ -89,7 +87,6 @@ const SearchResult = () => {
 
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
             <div style={styles.searchWrapper}>
                 <Select
                     value={searchType}
@@ -151,7 +148,6 @@ const SearchResult = () => {
                     </div>
                 )}
             </div>
-            <QuickMenu />
         </Layout>
     );
 };

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, List, Spin, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import UserHeader from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
 import apiClient from "../api/apiClient";
 
 const { Content } = Layout;
@@ -60,7 +58,6 @@ const Proposers = () => {
 
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
             <div style={styles.content}>
                 {loading ? (
                     <div style={styles.loadingContainer}>
@@ -91,7 +88,6 @@ const Proposers = () => {
                     </div>
                 )}
             </div>
-            <QuickMenu />
         </Layout>
     );
 };

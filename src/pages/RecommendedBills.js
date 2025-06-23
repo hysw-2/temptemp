@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
 import { useNavigate } from "react-router-dom";
-import { Card, message } from "antd";
+import { Card, message, Spin } from "antd";
 import apiClient from "../api/apiClient";
 
 const RecommendedBills = () => {
@@ -14,9 +12,9 @@ const RecommendedBills = () => {
         const fetchRecommendedBills = async () => {
             try {
                 const userId = localStorage.getItem("userId");
-
                 if (!userId) {
                     message.warning("로그인이 필요합니다.");
+                    setLoading(false);
                     return;
                 }
 
@@ -33,71 +31,83 @@ const RecommendedBills = () => {
         fetchRecommendedBills();
     }, []);
 
-    return (
-        <div style={{position: "relative", height: "100vh", overflow: "hidden"}}>
-            <div style={{position: "fixed", top: 0, width: "100%", zIndex: 100}}>
-                <Header/>
-            </div>
-            <div style={{
-                marginTop: "40px",
-                marginBottom: "80px",
-                height: "calc(100vh - 64px - 80px)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                overflow: "hidden"
-            }}>
-                <div style={{width: "60%"}}>
-                    <Card style={{minHeight: "300px"}}>
-                        <h2 style={{
-                            textAlign: "center",
-                            fontSize: "16px",
-                            marginBottom: "20px",
-                            color: "#333"
-                        }}>
-                            사용자 맞춤형 추천 법안
-                        </h2>
+    if (loading) {
+        return <div style={styles.loadingContainer}><Spin size="large" /></div>;
+    }
 
-                        {loading ? (
-                            <div style={{textAlign: "center"}}>Loading...</div>
-                        ) : recommendedBills.length > 0 ? (
-                            recommendedBills.map((bill, index) => (
-                                <div
-                                    key={bill.billId}
-                                    onClick={() => navigate(`/bills/${bill.billId}`)}
-                                    style={{
-                                        padding: "9px",
-                                        borderBottom: "1px solid #eee",
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        gap: "10px",
-                                        cursor: "pointer"
-                                    }}
-                                >
-                                    <span style={{
-                                        flex: "1",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap"
-                                    }}>
-                                        {index + 1}. {bill.billTitle}
-                                    </span>
-                                </div>
-                            ))
-                        ) : (
-                            <div style={{textAlign: "center", color: "#888"}}>
-                                추천 법안이 없습니다.
+    return (
+        <div style={styles.container}>
+            <div style={{ width: "60%" }}> {/* 카드 너비 조절 */}
+                <Card style={styles.card}>
+                    <h2 style={styles.cardTitle}>
+                        사용자 맞춤형 추천 법안
+                    </h2>
+
+                    {recommendedBills.length > 0 ? (
+                        recommendedBills.map((bill, index) => (
+                            <div
+                                key={bill.billId}
+                                onClick={() => navigate(`/bills/${bill.billId}`)}
+                                style={styles.billItem}
+                            >
+                                <span style={styles.itemText}>
+                                    {index + 1}. {bill.billTitle}
+                                </span>
                             </div>
-                        )}
-                    </Card>
-                </div>
-            </div>
-            <div style={{position: "fixed", bottom: 0, width: "100%", zIndex: 100}}>
-                <QuickMenu/>
+                        ))
+                    ) : (
+                        <div style={styles.noData}>
+                            추천 법안이 없습니다.
+                        </div>
+                    )}
+                </Card>
             </div>
         </div>
     );
+};
+
+const styles = {
+    loadingContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 'calc(100vh - 194px)'
+    },
+    container: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px',
+        minHeight: 'calc(100vh - 194px)'
+    },
+    card: {
+        minHeight: '300px',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    cardTitle: {
+        textAlign: 'center',
+        fontSize: '18px',
+        marginTop: '0px',
+        marginBottom: '10px',
+        color: '#333'
+    },
+    billItem: {
+        padding: '8px 12px',
+        borderBottom: '1px solid #eee',
+        cursor: 'pointer'
+    },
+    itemText: {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+    },
+    noData: {
+        textAlign: 'center',
+        padding: '20px',
+        color: '#888'
+    }
 };
 
 export default RecommendedBills;

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Layout, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import UserHeader from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
 import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
@@ -22,7 +20,6 @@ const MainPage = () => {
 
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
             <Content style={styles.content}>
                 <div style={styles.searchWrapper}>
                     <Select
@@ -60,7 +57,6 @@ const MainPage = () => {
                     />
                 </div>
             </Content>
-            <QuickMenu />
         </Layout>
     );
 };
