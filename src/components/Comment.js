@@ -1,127 +1,114 @@
-import React, { useState, useMemo } from "react";
-import { Input, Button, List, Form, message, Modal } from "antd";
-import { WarningOutlined, EditOutlined, DeleteOutlined, ArrowRightOutlined, MessageOutlined } from "@ant-design/icons";
-import Report from "./Report";
+import React, { useState } from 'react';
+import { Input, Button, List, Form, message, Avatar, Modal } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 
-const Comment = ({ postId, comments = [], onAddComment, onEditComment, onDeleteComment, fetchComments }) => {
-  const [form] = Form.useForm();
-  const [reportTarget, setReportTarget] = useState(null);
-  const [editingComment, setEditingComment] = useState(null);
-  const [editForm] = Form.useForm();
+const Comment = ({ comment, onEditComment, onDeleteComment, onReportComment, level = 0 }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [isReportModalVisible, setIsReportModalVisible] = useState(false);
+    const [editForm] = Form.useForm();
+    const [reportForm] = Form.useForm();
 
-  const sortedComments = useMemo(() => {
-    // 모든 댓글을 날짜순으로 정렬 (최신순)
-    return [...comments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }, [comments]);
+    const currentUserId = localStorage.getItem("userId");
+    const currentUserNickName = localStorage.getItem("nickName");
+    const isMyComment = currentUserId === String(comment.userId);
+    const authorDisplayName = isMyComment ? currentUserNickName : '익명';
 
-  const handleSubmit = async (values) => {
-    try {
-      await onAddComment(values.content);
-      message.success("댓글이 등록되었습니다.");
-      form.resetFields();
-    } catch (error) {
-      message.error("댓글 등록 중 오류가 발생했습니다.");
-    }
-  };
+    const handleEdit = () => {
+        editForm.setFieldsValue({ content: comment.commentContent });
+        setIsEditing(true);
+    };
 
-  const handleEdit = (comment) => {
-    setEditingComment(comment);
-    editForm.setFieldsValue({ content: comment.commentContent });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+    const handleEditSubmit = (values) => {
+        onEditComment(comment.id, values.content);
+        setIsEditing(false);
+    };
 
-  const handleEditSubmit = async (values) => {
-    try {
-      await onEditComment(editingComment.commentId, values.content);
-      message.success("댓글이 수정되었습니다.");
-      setEditingComment(null);
-    } catch (error) {
-      message.error("댓글 수정 중 오류가 발생했습니다.");
-    }
-  };
+    const handleReport = () => {
+        setIsReportModalVisible(true);
+    };
 
-  const handleDelete = async (commentId) => {
-    try {
-      await onDeleteComment(commentId);
-      message.success("댓글이 삭제되었습니다.");
-    } catch (error) {
-      message.error("댓글 삭제 중 오류가 발생했습니다.");
-    }
-  };
+    const handleReportSubmit = (values) => {
+        onReportComment(comment.id, values.reason);
+        setIsReportModalVisible(false);
+        reportForm.resetFields();
+    };
 
-  const renderCommentContent = (comment) => {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <p style={{ margin: 0 }}>{comment.commentContent}</p>
-        <p style={{ fontSize: "0.9em", color: "#999", margin: 0 }}>
-          작성자: {comment.author} | 작성 시각: {new Date(comment.createdAt).toLocaleString()}
-        </p>
-      </div>
-    );
-  };
-
-  return (
-    <div style={{ marginTop: "20px" }}>
-      <Form form={form} onFinish={handleSubmit} style={{ marginBottom: "20px" }}>
-        <Form.Item
-          name="content"
-          rules={[{ required: true, message: "댓글 내용을 입력해주세요" }]}
-        >
-          <TextArea
-            rows={3}
-            placeholder="댓글을 입력하세요"
-            style={{ marginBottom: "10px" }}
-          />
-        </Form.Item>
-        <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
-          <Button type="primary" htmlType="submit">
-            댓글 등록
-          </Button>
-        </Form.Item>
-      </Form>
-
-      <List
-        dataSource={sortedComments}
-        renderItem={(comment) => (
-          <div>
+        <div style={{ marginLeft: level > 0 ? `${level * 40}px` : '0px' }}>
             <List.Item
-              actions={[
-                <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(comment)}>수정</Button>,
-                <Button type="link" icon={<DeleteOutlined />} danger onClick={() => handleDelete(comment.commentId)}>삭제</Button>,
-                <Button type="link" icon={<WarningOutlined />} onClick={() => setReportTarget(comment)}>신고</Button>
-              ]}
+                actions={[
+                    <Button type="link" onClick={handleEdit}>수정</Button>,
+                    <Button type="link" danger onClick={() => onDeleteComment(comment.id)}>삭제</Button>,
+                    <Button type="link" style={{color: 'orange'}} onClick={handleReport}>신고</Button>
+                ]}
             >
-              <List.Item.Meta description={renderCommentContent(comment)} />
+                {isEditing ? (
+                    <Form form={editForm} onFinish={handleEditSubmit} style={{ width: '100%' }}>
+                        <Form.Item name="content" noStyle>
+                            <TextArea rows={2} />
+                        </Form.Item>
+                        <Button type="primary" htmlType="submit" size="small" style={{ marginTop: 8 }}>수정 완료</Button>
+                        <Button onClick={() => setIsEditing(false)} size="small" style={{ marginLeft: 8 }}>취소</Button>
+                    </Form>
+                ) : (
+                    <List.Item.Meta
+                        avatar={<Avatar icon={<UserOutlined />} />}
+                        title={<span>{authorDisplayName}</span>}
+                        description={
+                            <div>
+                                <p style={{
+                                    marginBottom: 0,
+                                    color: '#000',
+                                    fontSize: '15px'
+                                }}>{comment.commentContent}</p>
+                                <p style={{fontSize: "0.9em", color: "#999", marginTop: 4}}>
+                                    | {new Date(comment.createdAt).toLocaleString()}
+                                </p>
+                            </div>
+                        }
+                    />
+                )}
             </List.Item>
-          </div>
-        )}
-      />
 
-      <Report
-        visible={!!reportTarget}
-        onClose={() => setReportTarget(null)}
-        targetId={reportTarget?.commentId}
-        type="comment"
-      />
+            {/* 자식 댓글(대댓글) 렌더링 */}
+            {comment.children && comment.children.length > 0 && (
+                <List
+                    dataSource={comment.children}
+                    renderItem={(childComment) => (
+                        <Comment
+                            key={childComment.id}
+                            comment={childComment}
+                            onEditComment={onEditComment}
+                            onDeleteComment={onDeleteComment}
+                            onReportComment={onReportComment}
+                            level={level + 1}
+                        />
+                    )}
+                    split={false}
+                />
+            )}
 
-      <Modal title="댓글 수정" open={!!editingComment} onCancel={() => setEditingComment(null)} footer={null}>
-        <Form form={editForm} onFinish={handleEditSubmit} layout="vertical">
-          <Form.Item
-            name="content"
-            label="수정 내용"
-            rules={[{ required: true, message: "내용을 입력해주세요" }]}
-          >
-            <TextArea rows={4} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">수정하기</Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
-  );
+            {/* 신고 모달 */}
+            <Modal
+                title="댓글 신고"
+                open={isReportModalVisible}
+                onCancel={() => setIsReportModalVisible(false)}
+                footer={null}
+            >
+                <Form form={reportForm} onFinish={handleReportSubmit} layout="vertical">
+                    <Form.Item label="신고 사유" name="reason" rules={[{ required: true, message: '신고 사유를 입력해주세요.' }]}>
+                        <TextArea rows={4} placeholder="신고 사유를 구체적으로 작성해주세요." />
+                    </Form.Item>
+                    <Form.Item style={{ textAlign: 'right' }}>
+                        <Button onClick={() => setIsReportModalVisible(false)} style={{ marginRight: 8 }}>취소</Button>
+                        <Button type="primary" danger htmlType="submit">신고하기</Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
+    );
 };
 
 export default Comment;

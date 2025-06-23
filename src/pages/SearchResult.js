@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Input, Select, List, Spin, Pagination, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import UserHeader from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
 import { useLocation, useNavigate } from "react-router-dom";
 import { searchBills, formatSearchQuery } from "../api/userfnc/searchAPI";
 import Bookmark from "../components/Bookmark";
@@ -85,6 +83,7 @@ const SearchResult = () => {
                     <div style={styles.resultDescription}>
                         안건번호: {item.billNumber}<br />
                         발의자: {item.billProposer}<br />
+                        정당: {item.poly}<br />
                         소관위: {item.committee}<br />
                         상태: {item.billStatus}
                     </div>
@@ -95,7 +94,6 @@ const SearchResult = () => {
 
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
             <div style={styles.searchWrapper}>
                 <Select
                     value={searchType}
@@ -162,7 +160,6 @@ const SearchResult = () => {
                     </div>
                 )}
             </div>
-            <QuickMenu />
         </Layout>
     );
 };

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Layout, Spin, message, Card } from "antd";
-import UserHeader from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
 import apiClient from "../api/apiClient";
 
 const { Content } = Layout;
@@ -31,11 +29,9 @@ const ProposerDetail = () => {
     if (loading) {
         return (
             <Layout>
-                <UserHeader />
                 <Content style={styles.loading}>
                     <Spin size="large" />
                 </Content>
-                <QuickMenu />
             </Layout>
         );
     }
@@ -43,18 +39,15 @@ const ProposerDetail = () => {
     if (!proposer) {
         return (
             <Layout>
-                <UserHeader />
                 <Content style={styles.error}>
                     <p>발의자 정보를 찾을 수 없습니다.</p>
                 </Content>
-                <QuickMenu />
             </Layout>
         );
     }
 
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
             <Content style={styles.content}>
                 <h2>{proposer.name}</h2>
 
@@ -73,7 +66,6 @@ const ProposerDetail = () => {
                 </Card>
                 
             </Content>
-            <QuickMenu />
         </Layout>
     );
 };

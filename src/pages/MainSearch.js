@@ -22,7 +22,7 @@ const MainPage = () => {
 
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
+            
             <Content style={styles.content}>
                 <div style={styles.searchWrapper}>
                     <Select
@@ -60,7 +60,6 @@ const MainPage = () => {
                     />
                 </div>
             </Content>
-            <QuickMenu />
         </Layout>
     );
 };

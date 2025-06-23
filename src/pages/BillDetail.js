@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Layout, Spin, message, Card, Button } from "antd";
-import { LikeOutlined, DislikeOutlined } from "@ant-design/icons";
-import UserHeader from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
+import {LikeOutlined, DislikeOutlined} from "@ant-design/icons";
 import LinkBillInfo from "../components/LinkBillInfo";
 import apiClient from "../api/apiClient";
 import voteAPI from "../api/userfnc/voteAPI";
@@ -17,7 +15,6 @@ const BillDetail = () => {
     const [loading, setLoading] = useState(true);
     const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
     const [userVote, setUserVote]=useState(null);
-
     useEffect(() => {
         const fetchBill = async () => {
             try {
@@ -178,9 +175,7 @@ const BillDetail = () => {
     if (loading) {
         return (
             <Layout style={styles.layout}>
-                <UserHeader />
                 <div style={styles.loading}><Spin size="large" /></div>
-                <QuickMenu />
             </Layout>
         );
     }
@@ -188,18 +183,15 @@ const BillDetail = () => {
     if (!bill) {
         return (
             <Layout style={styles.layout}>
-                <UserHeader />
                 <div style={styles.loading}>법안 정보를 찾을 수 없습니다.</div>
-                <QuickMenu />
             </Layout>
         );
     }
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
             <Content style={styles.content}>
                 <div style={styles.titleContainer}>
-                    <h1 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <h1 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                         <span style={{ display: "inline-block" }}>
                             <Bookmark id={Number(billId)} />
                         </span>
@@ -207,6 +199,7 @@ const BillDetail = () => {
                         <LinkBillInfo billId={billId}/>
                     </h1>
                 </div>
+
                 <div style={{padding: "12px 0px"}}>
                     <p><strong>안건번호:</strong> {bill.billNumber}</p>
                     <p><strong>발의일:</strong> {new Date(bill.billDate).toLocaleDateString()}</p>
@@ -282,18 +275,12 @@ const BillDetail = () => {
                     </Card>
                 </div>
 
-                {/*<div style={{ padding: "12px 0px" }}>*/}
-                {/*    <h3>용어 설명</h3>*/}
-                {/*    <Card><p>{bill.term}</p></Card>*/}
-                {/*</div>*/}
-
                 {tooltip.visible && (
                     <div style={{...styles.tooltip, top: tooltip.y, left: tooltip.x}}>
                         {tooltip.text}
                     </div>
                 )}
             </Content>
-            <QuickMenu/>
         </Layout>
     );
 };
@@ -398,6 +385,7 @@ const styles = {
         padding: '0 10px',
         fontSize: '14px',
     },
+
 
 };
 

@@ -30,3 +30,14 @@ export const getPostById = async (postId) => {
     const response = await apiClient.get(`/posts/${postId}`);
     return response.data;
 };
+
+export const reportPost = async (targetId, reason) => {
+    const uid = localStorage.getItem("uid");
+    const response = await apiClient.post('/report/create', {
+        uid,
+        targetId,
+        targetType: 'POST',
+        reason,
+    });
+    return response.data;
+};

@@ -5,7 +5,7 @@ import { reportPost, reportComment } from "../api/userfnc/reportAPI";
 
 const { TextArea } = Input;
 
-const Report = ({ visible, onClose, targetId, type, targetAuthor }) => {
+const Report = ({ visible, onClose, targetId, type, targetAuthor, target }) => {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, List, Spin, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import UserHeader from "../components/Header";
-import QuickMenu from "../components/QuickMenu";
 import apiClient from "../api/apiClient";
 import Bookmark from "../components/Bookmark";
 
@@ -50,7 +48,7 @@ const Bills = () => {
                 style={styles.textBlock}
                 onClick={() => navigate(`/bills/${item.billId}`)}
             >
-            <div style={styles.resultTitleWrapper}>
+                <div style={styles.resultTitleWrapper}>
                         <div onClick={(e) => e.stopPropagation()}>
                             <Bookmark id={item.billId} />
                         </div>
@@ -59,16 +57,16 @@ const Bills = () => {
                     <div style={styles.resultDescription}>
                         안건번호: {item.billNumber}<br />
                         발의자: {item.billProposer}<br />
+                        정당: {item.poly}<br />
                         소관위: {item.committee}<br />
                         상태: {item.billStatus}
                     </div>
-                </div>
+            </div>
         );
     };
 
     return (
         <Layout style={styles.layout}>
-            <UserHeader />
             <div style={styles.content}>
                 {loading ? (
                     <div style={styles.loadingContainer}>
@@ -99,7 +97,6 @@ const Bills = () => {
                     </div>
                 )}
             </div>
-            <QuickMenu />
         </Layout>
     );
 };
@@ -141,6 +138,7 @@ const styles = {
         padding: "16px",
         borderBottom: "1px solid #ddd",
         cursor: "pointer",
+        width: "100%"
     },
     resultTitleWrapper: {
         display: "flex",

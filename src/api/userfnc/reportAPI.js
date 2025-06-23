@@ -1,10 +1,6 @@
 import apiClient from "../apiClient";
 
-/**
- * 게시글 신고 요청
- * @param {number} postId - 신고 대상 게시글 ID
- * @param {string} reason - 신고 사유
- */
+
 export const reportPost = async (postId, reason) => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -13,12 +9,12 @@ export const reportPost = async (postId, reason) => {
     }
 
     const payload = {
-      targetId: postId,
+      targetId: Number(postId),
       targetType: "POST",
-      reason: reason,
+      reason: reason?.trim(),
     };
 
-    console.log("신고 요청 payload (POST):", payload);
+    console.log("게시글 신고 요청 payload (POST):", payload);
 
     const response = await apiClient.post("/report/create", payload, {
       headers: {
@@ -37,11 +33,6 @@ export const reportPost = async (postId, reason) => {
   }
 };
 
-/**
- * 댓글 신고 요청
- * @param {number} commentId - 신고 대상 댓글 ID
- * @param {string} reason - 신고 사유
- */
 export const reportComment = async (commentId, reason) => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -50,12 +41,12 @@ export const reportComment = async (commentId, reason) => {
     }
 
     const payload = {
-      targetId: commentId,
+      targetId: Number(commentId),
       targetType: "COMMENT",
       reason: reason,
     };
 
-    console.log("신고 요청 payload (COMMENT):", payload);
+    console.log("댓글 신고 요청 payload (COMMENT):", payload);
 
     const response = await apiClient.post("/report/create", payload, {
       headers: {
