@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Layout, List, Spin, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../api/apiClient";
+import Bookmark from "../components/Bookmark";
 
 const { Content } = Layout;
 
@@ -47,13 +48,19 @@ const Bills = () => {
                 style={styles.textBlock}
                 onClick={() => navigate(`/bills/${item.billId}`)}
             >
-                <div style={styles.resultTitle}>{item.billTitle}</div>
-                <div style={styles.resultDescription}>
-                    안건번호: {item.billNumber}<br></br>
-                    발의자: {item.billProposer}<br></br>
-                    소관위: {item.committee}<br></br>
-                    상태: {item.billStatus}
-                </div>
+                <div style={styles.resultTitleWrapper}>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <Bookmark id={item.billId} />
+                        </div>
+                        <span style={styles.resultTitle}>{item.billTitle}</span>
+                    </div>
+                    <div style={styles.resultDescription}>
+                        안건번호: {item.billNumber}<br />
+                        발의자: {item.billProposer}<br />
+                        정당: {item.poly}<br />
+                        소관위: {item.committee}<br />
+                        상태: {item.billStatus}
+                    </div>
             </div>
         );
     };
@@ -132,6 +139,11 @@ const styles = {
         borderBottom: "1px solid #ddd",
         cursor: "pointer",
         width: "100%"
+    },
+    resultTitleWrapper: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
     },
     resultTitle: {
         fontSize: "1.2em",

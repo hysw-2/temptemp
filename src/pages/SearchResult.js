@@ -3,6 +3,7 @@ import { Layout, Input, Select, List, Spin, Pagination, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { searchBills, formatSearchQuery } from "../api/userfnc/searchAPI";
+import Bookmark from "../components/Bookmark";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -37,7 +38,7 @@ const SearchResult = () => {
 
     const handleSearch = async (e) => {
         if (e.key === "Enter" && searchQuery.trim()) {
-            setCurrentPage(1); // 검색 시 페이지 초기화
+            setCurrentPage(1);
             navigate(`/searchresult?type=${searchType}&query=${encodeURIComponent(searchQuery)}`);
             fetchData(1);
         }
@@ -54,22 +55,7 @@ const SearchResult = () => {
     };
 
     const renderSearchResult = (item) => {
-        if (searchType === "billTitle") {
-            return (
-                <div
-                    style={styles.textBlock}
-                    onClick={() => navigate(`/bills/${item.billId}`)}
-                >
-                    <div style={styles.resultTitle}>{item.billTitle}</div>
-                    <div style={styles.resultDescription}>
-                        안건번호: {item.billNumber}<br />
-                        발의자: {item.billProposer}<br />
-                        소관위: {item.committee}<br />
-                        상태: {item.billStatus}
-                    </div>
-                </div>
-            );
-        } else if (searchType === "proposers") {
+        if (searchType === "proposers") {
             return (
                 <div
                     style={styles.textBlock}
@@ -77,8 +63,29 @@ const SearchResult = () => {
                 >
                     <div style={styles.resultTitle}>{item.name}</div>
                     <div style={styles.resultDescription}>
-                        소속 정당: {item.party}<br />
+                        소속 정당: {item.party}<br/>
                         직책: {item.career}
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div
+                    style={styles.textBlock}
+                    onClick={() => navigate(`/bills/${item.billId}`)}
+                >
+                    <div style={styles.resultTitleWrapper}>
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <Bookmark id={item.billId} />
+                        </div>
+                        <span style={styles.resultTitle}>{item.billTitle}</span>
+                    </div>
+                    <div style={styles.resultDescription}>
+                        안건번호: {item.billNumber}<br />
+                        발의자: {item.billProposer}<br />
+                        정당: {item.poly}<br />
+                        소관위: {item.committee}<br />
+                        상태: {item.billStatus}
                     </div>
                 </div>
             );
@@ -95,6 +102,11 @@ const SearchResult = () => {
                 >
                     <Option value="billTitle">법안명</Option>
                     <Option value="proposers">발의자</Option>
+                    <Option value="detail">내용</Option>
+                    <Option value="titleProposer">법안명+발의자</Option>
+                    <Option value="titleProposerDetail">법안명+발의자+내용</Option>
+                    <Option value="committee">소관위</Option>
+                    <Option value="all">종합</Option>
                 </Select>
                 <Input
                     placeholder="궁금한 발의안을 검색해보세요!"
@@ -165,16 +177,17 @@ const styles = {
         height: "calc(100vh - 180px)",
     },
     searchWrapper: {
-        paddingTop: '10px',
+        paddingTop: "10px",
         width: "100%",
         display: "flex",
         justifyContent: "center",
         gap: "10px",
     },
     searchSelect: {
-        width: "120px",
+        width: "180px",
         height: "8.3vh",
         fontSize: "1.2vw",
+        textAlign: "center",
     },
     searchInput: {
         width: "50vw",
@@ -206,6 +219,11 @@ const styles = {
         padding: "16px",
         borderBottom: "1px solid #ddd",
         cursor: "pointer",
+    },
+    resultTitleWrapper: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
     },
     resultTitle: {
         fontSize: "1.2em",
