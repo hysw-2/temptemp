@@ -191,11 +191,9 @@ const BillDetail = () => {
         <Layout style={styles.layout}>
             <Content style={styles.content}>
                 <div style={styles.titleContainer}>
-                <h1 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <span style={{ display: "inline-block" }}>
-                            <Bookmark id={Number(billId)} />
-                        </span>
-                        {bill.billTitle}
+                    <h1 style={{display: "flex", alignItems: "center", gap: "3px"}}>
+                        <span style={{flexGrow: 1}}>{bill.billTitle}</span>
+                        <Bookmark id={Number(billId)}/>
                         <LinkBillInfo billId={billId}/>
                     </h1>
                 </div>

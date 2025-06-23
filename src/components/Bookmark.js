@@ -63,7 +63,7 @@ const Bookmark = ({ id }) => {
             <BookOutlined 
                 style={{ 
                     fontSize: '24px',
-                    color: isBookmarked ? '#000000' : '#CCCCCC',
+                    color: isBookmarked ? '#F3AD3C' : '#000000' ,
                     transition: 'color 0.3s ease'
                 }} 
             />

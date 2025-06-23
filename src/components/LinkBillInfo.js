@@ -28,13 +28,8 @@ const LinkBillInfo = ({ billId }) => {
             alt="의안정보시스템에서 보기"
             onClick={handleDownload}
             style={{
-<<<<<<<< HEAD:src/components/LinkBillInfo.js
-                width: '100px',
-                height: '20px',
-========
                 width: 'auto',
-                height:'32px',
->>>>>>>> origin/master:src/components/DownloadPdf.js
+                height:'20px',
                 cursor: 'pointer',
                 marginLeft: '10px',
                 opacity: loading ? 0.5 : 1,
