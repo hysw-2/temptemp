@@ -55,7 +55,7 @@ const Comment = ({ comment, onEditComment, onDeleteComment, onReportComment, lev
                 ) : (
                     <List.Item.Meta
                         avatar={<Avatar icon={<UserOutlined />} />}
-                        title={<span>{authorDisplayName}</span>} // 수정된 부분
+                        title={<span>{authorDisplayName}</span>}
                         description={
                             <div>
                                 <p style={{
