@@ -54,7 +54,7 @@ const Bookmark = ({ id }) => {
                 border: 'none',
                 cursor: 'pointer',
                 padding: '5px',
-                marginRight: '10px',
+                //marginRight: '10px',
                 display: 'flex',
                 alignItems: 'center'
             }}
